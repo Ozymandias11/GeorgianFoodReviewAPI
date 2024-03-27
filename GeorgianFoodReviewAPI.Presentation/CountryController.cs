@@ -40,7 +40,11 @@ namespace GeorgianFoodReviewAPI.Presentation
 
             if(country is null)
                 return BadRequest("CountryToCreateDto is null");
-            
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+
 
             var createdCountry = _service.CountryService.CreateCountry(country);
 

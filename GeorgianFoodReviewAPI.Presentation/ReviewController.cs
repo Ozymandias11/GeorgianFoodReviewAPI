@@ -52,6 +52,9 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (review is null)
                 return BadRequest("ReviewForCreationDto is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var reviewCreated = _service.ReviewService.CreateReview(reviewerId, FoodId, review,
                                          trackChanges: false);
             return CreatedAtRoute("GetReviewById", new { reviewerId, FoodId, id = reviewCreated.id },

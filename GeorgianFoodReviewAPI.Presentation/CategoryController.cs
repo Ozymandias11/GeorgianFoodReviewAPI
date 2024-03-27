@@ -39,9 +39,12 @@ namespace GeorgianFoodReviewAPI.Presentation
         public IActionResult CreateCategory([FromBody] CategoryToCreateDto category)
         {
             if (category == null)
-            {
                 return BadRequest("CategoryToCreateDto is null");
-            }
+
+            if(!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+              
+            
 
             var createdCategory = _service.CategoryService.CreateCategory(category);
 

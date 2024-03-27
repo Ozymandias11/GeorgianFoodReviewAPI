@@ -40,6 +40,9 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (food is null)
                 return BadRequest("FoodForCreationDto is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var createdFood = _service.FoodService.CreateFood(categoryId, food, trackChanges:false);
 
             return CreatedAtRoute("GetFoodById",new { categoryId, id = createdFood.id }, createdFood);
