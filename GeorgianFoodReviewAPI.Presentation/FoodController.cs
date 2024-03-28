@@ -59,6 +59,13 @@ namespace GeorgianFoodReviewAPI.Presentation
         [HttpPut("{id:guid}")]
         public IActionResult UpdateFood(Guid id, [FromBody] FoodForUpdateDto food)
         {
+
+            if (food is null)
+                return BadRequest("FoodForUpdateDto is null");
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             _service.FoodService.UpdateFood(id, food, trackChanges: true);
             return NoContent();
         }

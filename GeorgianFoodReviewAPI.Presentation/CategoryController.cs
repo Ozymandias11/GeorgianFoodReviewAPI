@@ -62,6 +62,13 @@ namespace GeorgianFoodReviewAPI.Presentation
         [HttpPut("{id:guid}")]
         public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
         {
+
+            if (category is null)
+                return BadRequest("CategoryForUpdate Dto is null");
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             _service.CategoryService.UpdateCatgeory(id, category, trackChanges:true);
             return NoContent();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.DataTransferObjects.DtoForManupulation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,9 +8,6 @@ using System.Threading.Tasks;
 
 namespace Shared.DataTransferObjects.DtosForPost
 {
-    public record CountryForCreationDto
-    {
-        [Required(ErrorMessage = "Country Name is a required field")]
-        public string? Name { get; init; }
-    }
+    public record CountryForCreationDto : CountryForManipulationDto;
+    
 }

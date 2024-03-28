@@ -64,6 +64,9 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (country is null)
                 return BadRequest("CountryForUpdateDto is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             _service.CountryService.UpdateCountry(id,country, trackChanges:true);
             return NoContent(); 
         }

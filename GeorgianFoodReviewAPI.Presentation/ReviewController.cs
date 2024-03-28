@@ -87,6 +87,9 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (patchDoc is null)
                 return BadRequest("PatchDOc is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             var result = _service.ReviewService.GetReviewForPatch(id, trackChanges: true);
             patchDoc.ApplyTo(result.reviewToPatch);
 

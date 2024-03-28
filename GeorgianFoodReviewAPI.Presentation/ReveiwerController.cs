@@ -72,6 +72,9 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (reviewer is null)
                 return BadRequest("ReviewerForUpdateDto is null");
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
             _service.ReviewerService.UpdateReviewerForCountry(countryId, reviewerId, reviewer, countryTrackChanges: false,
                                                               reviewerTrackChanges: true);
             return NoContent();
