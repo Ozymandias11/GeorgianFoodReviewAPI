@@ -28,20 +28,19 @@ namespace Service
 
         }
 
-        public FoodDto CreateFood(Guid categoryId, FoodForCreationDto food, bool trackChanges)
+        public async Task<FoodDto> CreateFoodAsync(Guid categoryId, FoodForCreationDto food, bool trackChanges)
         {
-            var categoryEntity = _repository.Category.GetCategory(categoryId, trackChanges);
+            var categoryEntity = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
 
             if(categoryEntity is null)
-            {
                 throw new CategoryNotFoundException(categoryId);
-            }
+            
 
             var foodEntity = _mapper.Map<Food>(food);
 
             _repository.Food.CreateFood(foodEntity);
             _repository.FoodCategory.CreateFoodCategory(foodEntity, categoryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var FoodToReturn = _mapper.Map<FoodDto>(foodEntity);
 
@@ -49,48 +48,47 @@ namespace Service
 
         }
 
-        public void DeleteFood(Guid foodId, bool trackChanges)
+        public async Task DeleteFoodAsync(Guid foodId, bool trackChanges)
         {
-            var foodEntity = _repository.Food.GetFood(foodId, trackChanges);
+            var foodEntity = await _repository.Food.GetFoodAsync(foodId, trackChanges);
             
             if(foodEntity is null)
                 throw new FoodNotFoundException(foodId);
 
             _repository.Food.DeleteFood(foodEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<FoodDto> GetAllFoods(bool trackChanges)
+        public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(bool trackChanges)
         {
-            var foods = _repository.Food.GetAllFoods(trackChanges);
+            var foods = await _repository.Food.GetAllFoodsAsync(trackChanges);
             var foodsDto = _mapper.Map<IEnumerable<FoodDto>>(foods);
 
             return foodsDto;
         }
 
-        public FoodDto GetFood(Guid foodId, bool trackChanges)
+        public async Task<FoodDto> GetFoodAsync(Guid foodId, bool trackChanges)
         {
-            var food = _repository.Food.GetFood(foodId, trackChanges);
+            var food = await _repository.Food.GetFoodAsync(foodId, trackChanges);
 
             if(food is null)
-            {
                 throw new FoodNotFoundException(foodId);
-            }
+            
 
             var foodDto = _mapper.Map<FoodDto>(food);
             return foodDto;
 
         }
 
-        public void UpdateFood(Guid foodId, FoodForUpdateDto food, bool trackChanges)
+        public async Task UpdateFoodAsync(Guid foodId, FoodForUpdateDto food, bool trackChanges)
         {
-            var foodEntity = _repository.Food.GetFood(foodId, trackChanges);
+            var foodEntity = await _repository.Food.GetFoodAsync(foodId, trackChanges);
 
             if (foodEntity is null)
                 throw new FoodNotFoundException(foodId);
 
             _mapper.Map(food, foodEntity);  
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
     }

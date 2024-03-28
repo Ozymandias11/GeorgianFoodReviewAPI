@@ -43,7 +43,7 @@ namespace Repository.RepositoryUserClasses
         public IReviewerRepository Reviewer => _reviewerRepository.Value;
         public IFoodCategoryRepository FoodCategory => _foodCategoryRepository.Value;
 
-        public void Save() => _repositoryContext.SaveChanges();
+        public async Task SaveAsync() => await _repositoryContext.SaveChangesAsync();
 
 
 

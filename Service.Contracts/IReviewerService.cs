@@ -12,18 +12,18 @@ namespace Service.Contracts
 {
     public interface IReviewerService
     {
-        IEnumerable<ReviewerDto> GetAllReviewers(bool trackChanges);
-        ReviewerDto GetReviewer(Guid id, bool trackChanges);
-        IEnumerable<ReviewerDto> GetReviewersOfCountry(Guid countryId, bool trackChanges);
-        ReviewerDto CreateReviewerForCountry(Guid countryId, ReviewerForCreationDto reviewer, bool trackChanges);
-        void DeleteReviewer(Guid reviewerId, bool trackChanges);
-        void UpdateReviewerForCountry(Guid countryId, Guid ReviewerId, ReviewerForUpdateDto reviewer,
+        Task<IEnumerable<ReviewerDto>> GetAllReviewersAsync(bool trackChanges);
+        Task<ReviewerDto> GetReviewerAsync(Guid id, bool trackChanges);
+        Task<IEnumerable<ReviewerDto>> GetReviewersOfCountryAsync(Guid countryId, bool trackChanges);
+        Task<ReviewerDto> CreateReviewerForCountryAsync(Guid countryId, ReviewerForCreationDto reviewer, bool trackChanges);
+        Task DeleteReviewerAsync(Guid reviewerId, bool trackChanges);
+        Task UpdateReviewerForCountryAsync(Guid countryId, Guid ReviewerId, ReviewerForUpdateDto reviewer,
                                              bool countryTrackChanges, bool reviewerTrackChanges);
 
-        (ReviewerForUpdateDto reviewerToPatch, Reviewer reviwerEntity)
-            GetReviewerForPatch(Guid countryId, Guid reviewerId,
+        Task<(ReviewerForUpdateDto reviewerToPatch, Reviewer reviwerEntity)>
+            GetReviewerForPatchAsync(Guid countryId, Guid reviewerId,
             bool countryTrackChanges, bool reviewerTrackChanges);
-        void SaveChangesForPatch(ReviewerForUpdateDto reviewerToPatch, Reviewer reviewEntity);
+        Task SaveChangesForPatchAsync(ReviewerForUpdateDto reviewerToPatch, Reviewer reviewEntity);
 
     }
 }

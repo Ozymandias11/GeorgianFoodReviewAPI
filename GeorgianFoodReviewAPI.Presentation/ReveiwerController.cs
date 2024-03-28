@@ -22,28 +22,28 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public IActionResult GetAllReviewers()
+        public async Task<IActionResult> GetAllReviewers()
         {
-            var reviewers = _service.ReviewerService.GetAllReviewers(trackChanges:false);
+            var reviewers = await _service.ReviewerService.GetAllReviewersAsync(trackChanges:false);
             return Ok(reviewers);
         }
 
         [HttpGet("{id:guid}", Name = "GetReviewerById")]
-        public IActionResult GetReviewers(Guid id) 
+        public async Task<IActionResult> GetReviewers(Guid id) 
         {
-            var reviewer = _service.ReviewerService.GetReviewer(id, trackChanges:false);
+            var reviewer = await _service.ReviewerService.GetReviewerAsync(id, trackChanges:false);
             return Ok(reviewer);    
         }
 
         [HttpGet("country/{countryId:Guid}")]
-        public IActionResult GetReviewersOfCountry(Guid countryId)
+        public async Task<IActionResult> GetReviewersOfCountry(Guid countryId)
         {
-            var reviewers = _service.ReviewerService.GetReviewersOfCountry(countryId, trackChanges:false);
+            var reviewers = await _service.ReviewerService.GetReviewersOfCountryAsync(countryId, trackChanges:false);
             return Ok(reviewers);
         }
 
         [HttpPost]
-        public IActionResult CreateReviewerForCountry(Guid countryId, [FromBody] ReviewerForCreationDto reviewer)
+        public async Task<IActionResult> CreateReviewerForCountry(Guid countryId, [FromBody] ReviewerForCreationDto reviewer)
         {
             if (reviewer is null)
                 return BadRequest("ReviewerForCreationDto is null");
@@ -51,7 +51,7 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var createdReviewer = _service.ReviewerService.CreateReviewerForCountry(countryId, reviewer, 
+            var createdReviewer = await _service.ReviewerService.CreateReviewerForCountryAsync(countryId, reviewer, 
                 trackChanges:false);
 
             return CreatedAtRoute("GetReviewerById", new { countryId, id = createdReviewer.id }, createdReviewer);
@@ -59,14 +59,14 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteReviewer(Guid id)
+        public async Task<IActionResult> DeleteReviewer(Guid id)
         {
-            _service.ReviewerService.DeleteReviewer(id, trackChanges:false);
+            await _service.ReviewerService.DeleteReviewerAsync(id, trackChanges:false);
             return NoContent();
         }
 
         [HttpPut("country/{countryId:Guid}/reviewer/{reviewerId:Guid}")]
-        public IActionResult UpdateReviewerForCountry(Guid countryId, Guid reviewerId, [FromBody] 
+        public async Task<IActionResult> UpdateReviewerForCountry(Guid countryId, Guid reviewerId, [FromBody] 
                                                          ReviewerForUpdateDto reviewer)
         {
             if (reviewer is null)
@@ -75,17 +75,18 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            _service.ReviewerService.UpdateReviewerForCountry(countryId, reviewerId, reviewer, countryTrackChanges: false,
+            await _service.ReviewerService.UpdateReviewerForCountryAsync(countryId, reviewerId, reviewer, countryTrackChanges: false,
                                                               reviewerTrackChanges: true);
             return NoContent();
         }
         [HttpPatch("country/{countryId:Guid}/reviewer/{reviwerId:Guid}/partial")]
-        public IActionResult partiallyUpdateReviewerForCountry(Guid countryId, Guid reviwerId,
+        public async Task<IActionResult> partiallyUpdateReviewerForCountry(Guid countryId, Guid reviwerId,
             [FromBody] JsonPatchDocument<ReviewerForUpdateDto> patchDoc)
         {
             if (patchDoc is null)
                 return BadRequest("PathDoc is null");
-            var result = _service.ReviewerService.GetReviewerForPatch(countryId, reviwerId,
+
+            var result = await _service.ReviewerService.GetReviewerForPatchAsync(countryId, reviwerId,
                 countryTrackChanges: false, reviewerTrackChanges: true);
 
             patchDoc.ApplyTo(result.reviewerToPatch);
@@ -95,7 +96,8 @@ namespace GeorgianFoodReviewAPI.Presentation
 
             TryValidateModel(result.reviewerToPatch);
 
-            _service.ReviewerService.SaveChangesForPatch(result.reviewerToPatch, result.reviwerEntity);
+            await _service.ReviewerService.SaveChangesForPatchAsync(result.reviewerToPatch,
+                result.reviwerEntity);
 
             return NoContent();
 

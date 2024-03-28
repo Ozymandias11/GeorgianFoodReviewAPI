@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,15 +23,15 @@ namespace Repository.RepositoryUserClasses
             
         
 
-        public IEnumerable<Category> GetAllCategories(bool trackChanges)
-            => FindAll(trackChanges).OrderBy(c => c.Name).ToList();
+        public async Task<IEnumerable<Category>> GetAllCategoriesAsync(bool trackChanges)
+            => await FindAll(trackChanges).OrderBy(c => c.Name).ToListAsync();
 
-        public Category GetCategory(Guid categoryId, bool trackChanges)
-            => FindByCondition(c => c.CategoryId == categoryId, trackChanges).
-            FirstOrDefault();
+        public async Task<Category> GetCategoryAsync(Guid categoryId, bool trackChanges)
+            => await FindByCondition(c => c.CategoryId == categoryId, trackChanges).
+            FirstOrDefaultAsync();
 
-        public Category GetCategoryByName(string name)
-            => FindByCondition(c => c.Name.Trim().ToUpper() == name.TrimEnd().ToUpper(), trackChanges:false)
-            .FirstOrDefault();
+        public async Task<Category> GetCategoryByNameAsync(string name)
+            =>await  FindByCondition(c => c.Name.Trim().ToUpper() == name.TrimEnd().ToUpper(), trackChanges:false)
+            .FirstOrDefaultAsync();
     }
 }

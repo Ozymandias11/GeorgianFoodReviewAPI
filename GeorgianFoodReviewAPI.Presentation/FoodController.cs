@@ -21,21 +21,21 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public IActionResult GetAllFoods()
+        public async Task<IActionResult> GetAllFoods()
         {
-            var foods = _service.FoodService.GetAllFoods(trackChanges: false);
+            var foods = await _service.FoodService.GetAllFoodsAsync(trackChanges: false);
             return Ok(foods);
         }
 
         [HttpGet("{id:guid}", Name = "GetFoodById")]
-        public IActionResult GetFood(Guid id)
+        public async Task<IActionResult> GetFood(Guid id)
         {
-            var food = _service.FoodService.GetFood(id, trackChanges:false);
+            var food = await _service.FoodService.GetFoodAsync(id, trackChanges:false);
             return Ok(food);
         }
 
         [HttpPost]
-        public IActionResult CreateFood(Guid categoryId, [FromBody] FoodForCreationDto food)
+        public async Task<IActionResult> CreateFood(Guid categoryId, [FromBody] FoodForCreationDto food)
         {
             if (food is null)
                 return BadRequest("FoodForCreationDto is null");
@@ -43,21 +43,21 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var createdFood = _service.FoodService.CreateFood(categoryId, food, trackChanges:false);
+            var createdFood = await _service.FoodService.CreateFoodAsync(categoryId, food, trackChanges:false);
 
             return CreatedAtRoute("GetFoodById",new { categoryId, id = createdFood.id }, createdFood);
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteFood(Guid id)
+        public async Task<IActionResult> DeleteFood(Guid id)
         {
-            _service.FoodService.DeleteFood(id, trackChanges:false);
+            await _service.FoodService.DeleteFoodAsync(id, trackChanges:false);
             return NoContent();
         }
 
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateFood(Guid id, [FromBody] FoodForUpdateDto food)
+        public async Task<IActionResult> UpdateFood(Guid id, [FromBody] FoodForUpdateDto food)
         {
 
             if (food is null)
@@ -66,7 +66,7 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            _service.FoodService.UpdateFood(id, food, trackChanges: true);
+            await _service.FoodService.UpdateFoodAsync(id, food, trackChanges: true);
             return NoContent();
         }
 

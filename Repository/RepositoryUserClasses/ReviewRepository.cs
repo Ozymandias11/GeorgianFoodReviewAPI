@@ -30,25 +30,25 @@ namespace Repository.RepositoryUserClasses
 
 
         // we have include redudancies, do not forget to fix
-        // 
-        public IEnumerable<Review> GetAllReviews(bool trackChanges)
-             => FindAll(trackChanges)
+        
+        public async Task<IEnumerable<Review>> GetAllReviewsAsync(bool trackChanges)
+             => await FindAll(trackChanges)
             .Include(r => r.Food)
-            .OrderBy(r => r.Title).ToList();
+            .OrderBy(r => r.Title).ToListAsync();
 
-        public Review GetReview(Guid reviewId, bool trackChanges)
-            => FindByCondition(r => r.id == reviewId, trackChanges)
+        public async Task<Review> GetReviewAsync(Guid reviewId, bool trackChanges)
+            => await FindByCondition(r => r.id == reviewId, trackChanges)
             .Include(r => r.Food)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
-        public IEnumerable<Review> GetReviewsOfFood(Guid foodId, bool trackChanges)
-            => FindByCondition(r => r.FoodId == foodId, trackChanges)
+        public async Task<IEnumerable<Review>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges)
+            => await FindByCondition(r => r.FoodId == foodId, trackChanges)
             .Include(r => r.Food)
             .OrderBy(c => c.rating)
-            .ToList();
+            .ToListAsync();
 
-        public IEnumerable<Review> GetReviewsOfReviewer(Guid reviewerId, bool trackChanges)
-            => FindByCondition(r => r.RevieweverId == reviewerId, trackChanges).ToList();
+        public async Task<IEnumerable<Review>> GetReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges)
+            => await FindByCondition(r => r.RevieweverId == reviewerId, trackChanges).ToListAsync();
         
     }
 }

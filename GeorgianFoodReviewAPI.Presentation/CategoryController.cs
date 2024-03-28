@@ -22,21 +22,21 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public IActionResult GetCategories()
+        public async Task<IActionResult> GetCategories()
         {
             
-            var categories = _service.CategoryService.GetAllCategories(trackChanges: false);
+            var categories = await _service.CategoryService.GetAllCategoriesAsync(trackChanges: false);
             return Ok(categories);
             
         }
         [HttpGet("{id:guid}", Name = "CategoryById")]
-        public IActionResult GetCategory(Guid id)
+        public async Task<IActionResult> GetCategory(Guid id)
         {
-            var category = _service.CategoryService.GetCategory(id, trackChanges:false);
+            var category =await _service.CategoryService.GetCategoryAsync(id, trackChanges:false);
             return Ok(category);
         }
         [HttpPost]
-        public IActionResult CreateCategory([FromBody] CategoryToCreateDto category)
+        public async Task<IActionResult> CreateCategoryAsync([FromBody] CategoryToCreateDto category)
         {
             if (category == null)
                 return BadRequest("CategoryToCreateDto is null");
@@ -46,21 +46,21 @@ namespace GeorgianFoodReviewAPI.Presentation
               
             
 
-            var createdCategory = _service.CategoryService.CreateCategory(category);
+            var createdCategory = await _service.CategoryService.CreateCategoryAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = createdCategory.CategoryId},createdCategory);
 
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteCategory(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            _service.CategoryService.DeleteCategory(id, trackChanges:false);
+            await _service.CategoryService.DeleteCategoryAsync(id, trackChanges:false);
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
+        public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
         {
 
             if (category is null)
@@ -69,7 +69,7 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            _service.CategoryService.UpdateCatgeory(id, category, trackChanges:true);
+            await _service.CategoryService.UpdateCatgeoryAsync(id, category, trackChanges:true);
             return NoContent();
         }
 

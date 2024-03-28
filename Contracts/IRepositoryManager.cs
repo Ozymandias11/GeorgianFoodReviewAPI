@@ -14,6 +14,6 @@ namespace Contracts
         IReviewRepository Review { get; }
         IReviewerRepository Reviewer { get; }
         IFoodCategoryRepository FoodCategory { get; }
-        void Save();
+        Task SaveAsync();
     }
 }

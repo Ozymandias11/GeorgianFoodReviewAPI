@@ -1,5 +1,6 @@
 ﻿using Contracts;
 using Entities.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,15 @@ namespace Repository.RepositoryUserClasses
         public void DeleteCountry(Country country) => Delete(country);  
        
 
-        public IEnumerable<Country> GetAllCountries(bool trackChanges)
-            => FindAll(trackChanges).OrderBy(c => c.Name).ToList();
+        public async Task<IEnumerable<Country>> GetAllCountriesAsync(bool trackChanges)
+            => await FindAll(trackChanges).OrderBy(c => c.Name).ToListAsync();
 
-        public Country GetCountry(Guid countryId, bool trackChanges)
-            => FindByCondition(c => c.Id == countryId, trackChanges)
-            .FirstOrDefault();
+        public async Task<Country> GetCountryAsync(Guid countryId, bool trackChanges)
+            =>await FindByCondition(c => c.Id == countryId, trackChanges)
+            .FirstOrDefaultAsync();
 
-        public Country GetCountryByName(string name)
-            => FindByCondition(c => c.Name.Trim().ToUpper() == name.TrimEnd().ToUpper(), trackChanges:false)
-            .FirstOrDefault();
+        public async Task<Country> GetCountryByNameAsync(string name)
+            => await FindByCondition(c => c.Name.Trim().ToUpper() == name.TrimEnd().ToUpper(), trackChanges:false)
+            .FirstOrDefaultAsync();
     }
 }

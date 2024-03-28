@@ -9,9 +9,9 @@ namespace Contracts
 {
    public interface IReviewerRepository
     {
-        IEnumerable<Reviewer> GetAllReveiwers(bool trackChanges);
-        Reviewer GetReviewever(Guid reviewerId, bool trackChanges);
-        IEnumerable<Reviewer> GetReviewersOfCountry(Guid countryId, bool trackChanges);
+        Task<IEnumerable<Reviewer>> GetAllReveiwersAsync(bool trackChanges);
+        Task<Reviewer> GetRevieweverAsync(Guid reviewerId, bool trackChanges);
+        Task<IEnumerable<Reviewer>> GetReviewersOfCountryAsync(Guid countryId, bool trackChanges);
         void CreateReviewerForCountry(Guid countryId, Reviewer reviewever);
         void DeleteReviewer(Reviewer reviewer);
     }

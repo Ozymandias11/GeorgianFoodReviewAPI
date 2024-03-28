@@ -9,10 +9,10 @@ namespace Contracts
 {
     public interface IReviewRepository
     {
-        IEnumerable<Review> GetAllReviews(bool trackChanges);
-        Review GetReview(Guid reviewId, bool trackChanges);
-        IEnumerable<Review> GetReviewsOfFood(Guid foodId, bool trackChanges);
-        IEnumerable<Review> GetReviewsOfReviewer(Guid reviewerId, bool trackChanges);
+        Task<IEnumerable<Review>> GetAllReviewsAsync(bool trackChanges);
+        Task<Review> GetReviewAsync(Guid reviewId, bool trackChanges);
+        Task<IEnumerable<Review>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges);
+        Task<IEnumerable<Review>> GetReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges);
         void CreateReview(Guid ReviewerId, Guid FoodId, Review review);
         void DeteleReview(Review review);
     }

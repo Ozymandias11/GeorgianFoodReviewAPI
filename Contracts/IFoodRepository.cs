@@ -9,9 +9,9 @@ namespace Contracts
 {
     public interface IFoodRepository
     {
-        IEnumerable<Food> GetAllFoods(bool trackChanges);
-        IEnumerable<Food> GetFoodsByCategory(Guid categoryId, bool trackChanges);    
-        Food GetFood(Guid foodId,  bool trackChanges);
+        Task<IEnumerable<Food>> GetAllFoodsAsync(bool trackChanges);
+        Task<IEnumerable<Food>> GetFoodsByCategoryAsync(Guid categoryId, bool trackChanges);    
+        Task<Food> GetFoodAsync(Guid foodId,  bool trackChanges);
         void CreateFood(Food food);
         void DeleteFood(Food food);    
         

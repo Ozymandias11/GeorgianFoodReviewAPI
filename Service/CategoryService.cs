@@ -28,9 +28,9 @@ namespace Service
             
         }
 
-        public CategoryDto CreateCategory(CategoryToCreateDto category)
+        public async Task<CategoryDto> CreateCategoryAsync(CategoryToCreateDto category)
         {
-            var categoryDuplicate = _repository.Category.GetCategoryByName(category.name);
+            var categoryDuplicate = await _repository.Category.GetCategoryByNameAsync(category.name);
             if(categoryDuplicate != null)
             {
                 throw new CategoryAlreadyExistsException(category.name);
@@ -39,7 +39,7 @@ namespace Service
             var categoryEntity = _mapper.Map<Category>(category);
 
             _repository.Category.CreateCategory(categoryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var categoryToReturn = _mapper.Map<CategoryDto>(categoryEntity);
 
@@ -47,14 +47,14 @@ namespace Service
 
         }
 
-        public void DeleteCategory(Guid categoryId, bool trackChanges)
+        public async Task DeleteCategoryAsync(Guid categoryId, bool trackChanges)
         {
-            var category = _repository.Category.GetCategory(categoryId, trackChanges);
+            var category = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
             
             if(category is null)
                 throw new CategoryNotFoundException(categoryId);
 
-            var foods = _repository.Food.GetFoodsByCategory(categoryId, trackChanges);
+            var foods = await _repository.Food.GetFoodsByCategoryAsync(categoryId, trackChanges);
 
            foreach(var food in foods)
             {
@@ -62,13 +62,13 @@ namespace Service
             }
 
             _repository.Category.DeleteCategory(category);
-            _repository.Save();
+             await _repository.SaveAsync();
         }
 
-        public IEnumerable<CategoryDto> GetAllCategories(bool trackChanges)
+        public async Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync(bool trackChanges)
         {
             
-                var categories = _repository.Category.GetAllCategories(trackChanges);
+                var categories = await _repository.Category.GetAllCategoriesAsync(trackChanges);
 
                 var categoriesDto = _mapper.Map<IEnumerable<CategoryDto>>(categories);
 
@@ -76,9 +76,9 @@ namespace Service
             
         }
 
-        public CategoryDto GetCategory(Guid categoryId, bool trackChanges)
+        public async Task<CategoryDto> GetCategoryAsync(Guid categoryId, bool trackChanges)
         {
-            var category = _repository.Category.GetCategory(categoryId, trackChanges);
+            var category = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
 
             if(category is null)
                 throw new CategoryNotFoundException(categoryId);
@@ -87,15 +87,15 @@ namespace Service
             return categoryDto;
         }
 
-        public void UpdateCatgeory(Guid categoryId, CategoryForUpdateDto category, bool trackChanges)
+        public async Task UpdateCatgeoryAsync(Guid categoryId, CategoryForUpdateDto category, bool trackChanges)
         {
-            var categoryEntity = _repository.Category.GetCategory(categoryId, trackChanges);
+            var categoryEntity = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
 
             if (categoryEntity is null)
                 throw new CategoryNotFoundException(categoryId);
 
             _mapper.Map(category, categoryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
 
         }

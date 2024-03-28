@@ -22,31 +22,31 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public IActionResult GetAllReviews()
+        public async Task<IActionResult> GetAllReviews()
         {
-            var reviews = _service.ReviewService.GetAllReviews(trackChnages: false);
+            var reviews = await _service.ReviewService.GetAllReviewsAsync(trackChnages: false);
             return Ok(reviews);
         }
 
 
         [HttpGet("{id:guid}", Name = "GetReviewById")]
-        public IActionResult GetReview(Guid id)
+        public async Task<IActionResult> GetReview(Guid id)
         {
-            var review = _service.ReviewService.GetReview(id, trackChnages: false);
+            var review = await _service.ReviewService.GetReviewAsync(id, trackChnages: false);
             return Ok(review);
         }
 
 
         [HttpGet("food/{foodId:Guid}")]
-        public IActionResult GetReviewsOfFood(Guid foodId)
+        public async Task<IActionResult> GetReviewsOfFood(Guid foodId)
         {
-            var reviews = _service.ReviewService.GetReviewsOfFood(foodId, trackChanges: false);
+            var reviews = await _service.ReviewService.GetReviewsOfFoodAsync(foodId, trackChanges: false);
             return Ok(reviews);
         }
 
 
         [HttpPost]
-        public IActionResult CreateReview(Guid reviewerId, Guid FoodId, [FromBody]
+        public async Task<IActionResult> CreateReview(Guid reviewerId, Guid FoodId, [FromBody]
                                              ReviewForCreationDto review)
         {
             if (review is null)
@@ -55,34 +55,34 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var reviewCreated = _service.ReviewService.CreateReview(reviewerId, FoodId, review,
+            var reviewCreated = await _service.ReviewService.CreateReviewAsync(reviewerId, FoodId, review,
                                          trackChanges: false);
             return CreatedAtRoute("GetReviewById", new { reviewerId, FoodId, id = reviewCreated.id },
                                                     reviewCreated);
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteReview(Guid id)
+        public async Task<IActionResult> DeleteReview(Guid id)
         {
-            _service.ReviewService.DeleteReview(id, trackChanges: false);
+            await _service.ReviewService.DeleteReviewAsync(id, trackChanges: false);
 
             return NoContent();
-        }
+        }   
         [HttpDelete("DeleteReviewsOfReviewer/{id:guid}")]
-        public IActionResult DeleteReviewsOfReviewers(Guid id)
+        public async Task<IActionResult> DeleteReviewsOfReviewers(Guid id)
         {
-            _service.ReviewService.DeleteReviewsOfReviewer(id, trackChanges: false);
+            await _service.ReviewService.DeleteReviewsOfReviewerAsync(id, trackChanges: false);
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateReview(Guid id, [FromBody] ReviewForUpdateDto review)
+        public async Task<IActionResult> UpdateReview(Guid id, [FromBody] ReviewForUpdateDto review)
         {
-            _service.ReviewService.UpdateReview(id, review, trackChanges: true);
+            await _service.ReviewService.UpdateReviewAsync(id, review, trackChanges: true);
             return NoContent();
         }
         [HttpPatch("{id:Guid}")]
-        public IActionResult PartiallyUpdateReview(Guid id, [FromBody] JsonPatchDocument<ReviewForUpdateDto> patchDoc)
+        public async Task<IActionResult> PartiallyUpdateReview(Guid id, [FromBody] JsonPatchDocument<ReviewForUpdateDto> patchDoc)
         {
             if (patchDoc is null)
                 return BadRequest("PatchDOc is null");
@@ -90,7 +90,7 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            var result = _service.ReviewService.GetReviewForPatch(id, trackChanges: true);
+            var result = await _service.ReviewService.GetReviewForPatchAsync(id, trackChanges: true);
 
             patchDoc.ApplyTo(result.reviewToPatch);
 
@@ -99,7 +99,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
             TryValidateModel(result.reviewToPatch);
 
-            _service.ReviewService.SaveChangesForPatch(result.reviewToPatch, result.reviewEntity);
+            await _service.ReviewService.SaveChangesForPatchAsync(result.reviewToPatch, result.reviewEntity);
             return NoContent(); 
 
 

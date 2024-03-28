@@ -28,9 +28,9 @@ namespace Service
 
         }
 
-        public ReviewerDto CreateReviewerForCountry(Guid countryId, ReviewerForCreationDto reviewer, bool trackChanges)
+        public async Task<ReviewerDto> CreateReviewerForCountryAsync(Guid countryId, ReviewerForCreationDto reviewer, bool trackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, trackChanges);
+            var country =  await _repository.Country.GetCountryAsync(countryId, trackChanges);
 
             if(country is null)
                 throw new CountryNotFoundException(countryId);
@@ -38,7 +38,7 @@ namespace Service
             var ReviewerEntity = _mapper.Map<Reviewer>(reviewer);
 
             _repository.Reviewer.CreateReviewerForCountry(countryId, ReviewerEntity);
-            _repository.Save();
+             await _repository.SaveAsync();
 
             var reviewerToReturn = _mapper.Map<ReviewerDto>(ReviewerEntity);
 
@@ -46,22 +46,22 @@ namespace Service
 
         }
 
-        public void DeleteReviewer(Guid reviewerId, bool trackChanges)
+        public async Task DeleteReviewerAsync(Guid reviewerId, bool trackChanges)
         {
-            var reviewer = _repository.Reviewer.GetReviewever(reviewerId, trackChanges);
+            var reviewer = await _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
 
             if(reviewer is null)
                 throw new ReviewerNotFoundException(reviewerId);
 
             _repository.Reviewer.DeleteReviewer(reviewer);
-            _repository.Save();
+            await _repository.SaveAsync();
 
 
         }
 
-        public IEnumerable<ReviewerDto> GetAllReviewers(bool trackChanges)
+        public async Task<IEnumerable<ReviewerDto>> GetAllReviewersAsync(bool trackChanges)
         {
-            var reviewers = _repository.Reviewer.GetAllReveiwers(trackChanges);
+            var reviewers = await _repository.Reviewer.GetAllReveiwersAsync(trackChanges);
 
             var reviewersDto = _mapper.Map<IEnumerable<ReviewerDto>>(reviewers);
 
@@ -69,14 +69,13 @@ namespace Service
 
         }
 
-        public ReviewerDto GetReviewer(Guid id, bool trackChanges)
+        public async Task<ReviewerDto> GetReviewerAsync(Guid id, bool trackChanges)
         {
-            var reviewer = _repository.Reviewer.GetReviewever(id, trackChanges);
+            var reviewer =  await _repository.Reviewer.GetRevieweverAsync(id, trackChanges);
 
             if(reviewer is null)
-            {
                 throw new ReviewerNotFoundException(id);
-            }
+
 
             var reviewerDto = _mapper.Map<ReviewerDto>(reviewer);
             return reviewerDto;
@@ -84,14 +83,14 @@ namespace Service
 
         }
 
-        public (ReviewerForUpdateDto reviewerToPatch, Reviewer reviwerEntity) 
-            GetReviewerForPatch(Guid countryId, Guid reviewerId, bool countryTrackChanges, bool reviewerTrackChanges)
+        public async Task<(ReviewerForUpdateDto reviewerToPatch, Reviewer reviwerEntity)>
+            GetReviewerForPatchAsync(Guid countryId, Guid reviewerId, bool countryTrackChanges, bool reviewerTrackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, countryTrackChanges);
+            var country = await _repository.Country.GetCountryAsync(countryId, countryTrackChanges);
             if (country is null)
                 throw new CountryNotFoundException(countryId);
 
-            var reviewerEntity = _repository.Reviewer.GetReviewever(reviewerId, reviewerTrackChanges);
+            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(reviewerId, reviewerTrackChanges);
             if(reviewerEntity is null)
                 throw new ReviewerNotFoundException(reviewerId);
 
@@ -104,41 +103,41 @@ namespace Service
 
         }
 
-        public IEnumerable<ReviewerDto> GetReviewersOfCountry(Guid countryId, bool trackChanges)
+        public async Task<IEnumerable<ReviewerDto>> GetReviewersOfCountryAsync(Guid countryId, bool trackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, trackChanges);
+            var country = await _repository.Country.GetCountryAsync(countryId, trackChanges);
 
             if(country is null)
                 throw new CountryNotFoundException(countryId);
   
 
-            var reviewers = _repository.Reviewer.GetReviewersOfCountry(countryId, trackChanges);
+            var reviewers = await _repository.Reviewer.GetReviewersOfCountryAsync(countryId, trackChanges);
 
             var reviewersDto = _mapper.Map<IEnumerable<ReviewerDto>>(reviewers);
             return reviewersDto;
         }
 
-        public void SaveChangesForPatch(ReviewerForUpdateDto reviewerToPatch, Reviewer reviewEntity)
+        public async Task SaveChangesForPatchAsync(ReviewerForUpdateDto reviewerToPatch, Reviewer reviewEntity)
         {
             _mapper.Map(reviewerToPatch, reviewEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public void UpdateReviewerForCountry(Guid countryId, Guid ReviewerId, ReviewerForUpdateDto reviewer,
+        public async Task UpdateReviewerForCountryAsync(Guid countryId, Guid ReviewerId, ReviewerForUpdateDto reviewer,
                                      bool countryTrackChanges, bool reviewerTrackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, countryTrackChanges);
+            var country = await _repository.Country.GetCountryAsync(countryId, countryTrackChanges);
 
             if(country is null)
                 throw new CountryNotFoundException(countryId);
 
-            var reviewerEntity = _repository.Reviewer.GetReviewever(ReviewerId, reviewerTrackChanges);
+            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(ReviewerId, reviewerTrackChanges);
 
             if (reviewerEntity is null)
                 throw new ReviewerNotFoundException(ReviewerId);
 
             _mapper.Map(reviewer, reviewerEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
 
         }

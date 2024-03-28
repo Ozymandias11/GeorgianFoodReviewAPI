@@ -28,14 +28,14 @@ namespace Service
 
         }
 
-        public ReviewDto CreateReview(Guid reviewerId, Guid foodId, ReviewForCreationDto review, bool trackChanges)
+        public async Task<ReviewDto> CreateReviewAsync(Guid reviewerId, Guid foodId, ReviewForCreationDto review, bool trackChanges)
         {
-            var reviewerEntity = _repository.Reviewer.GetReviewever(reviewerId, trackChanges);
+            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
 
             if(reviewerEntity is null)
                 throw new ReviewerNotFoundException(reviewerId);
 
-            var foodEntity = _repository.Food.GetFood(foodId, trackChanges);
+            var foodEntity = await _repository.Food.GetFoodAsync(foodId, trackChanges);
 
             if(foodEntity is null)
                 throw new FoodNotFoundException(foodId);
@@ -43,7 +43,7 @@ namespace Service
             var reviewEntity = _mapper.Map<Review>(review);
 
             _repository.Review.CreateReview(reviewerId, foodId, reviewEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var reviewToReturn = _mapper.Map<ReviewDto>(reviewEntity);
 
@@ -52,59 +52,59 @@ namespace Service
 
         }
 
-        public void DeleteReview(Guid reviewId, bool trackChanges)
+        public async Task DeleteReviewAsync(Guid reviewId, bool trackChanges)
         {
-            var reviewEntity = _repository.Review.GetReview(reviewId, trackChanges);
+            var reviewEntity = await _repository.Review.GetReviewAsync(reviewId, trackChanges);
 
             if(reviewEntity is null)
                 throw new ReviewNotFoundException(reviewId);
 
             _repository.Review.DeteleReview(reviewEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
 
-        public void DeleteReviewsOfReviewer(Guid reviewerId, bool trackChanges)
+        public async Task DeleteReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges)
         {
-            var reviewerEntity = _repository.Reviewer.GetReviewever(reviewerId, trackChanges);
+            var reviewerEntity = _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
 
             if (reviewerEntity is null)
                 throw new ReviewerNotFoundException(reviewerId);
 
-            var reviewsOfReviewers = _repository.Review.GetReviewsOfReviewer(reviewerId, trackChanges);
+            var reviewsOfReviewers = await _repository.Review.
+                GetReviewsOfReviewerAsync(reviewerId, trackChanges);
 
             foreach(var review in reviewsOfReviewers)
                 _repository.Review.DeteleReview(review);
 
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
 
-        public IEnumerable<ReviewDto> GetAllReviews(bool trackChnages)
+        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(bool trackChnages)
         {
-            var reviews = _repository.Review.GetAllReviews(trackChnages);
+            var reviews = await _repository.Review.GetAllReviewsAsync(trackChnages);
             
             var reviewsDto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
 
             return reviewsDto;
         }
 
-        public ReviewDto GetReview(Guid reviewId, bool trackChnages)
+        public async Task<ReviewDto> GetReviewAsync(Guid reviewId, bool trackChnages)
         {
-            var review = _repository.Review.GetReview(reviewId, trackChnages);
+            var review = await _repository.Review.GetReviewAsync(reviewId, trackChnages);
+
             if(review is null)
-            {
                 throw new ReviewNotFoundException(reviewId);
-            }
-                
-            
+
             var reviewDto = _mapper.Map<ReviewDto>(review);
             return reviewDto;
         }
 
-        public (ReviewForUpdateDto reviewToPatch, Review reviewEntity) GetReviewForPatch(Guid reviewId, bool trackChanges)
+        public async Task<(ReviewForUpdateDto reviewToPatch, Review reviewEntity)>
+            GetReviewForPatchAsync(Guid reviewId, bool trackChanges)
         {
-            var reviewEntity = _repository.Review.GetReview(reviewId, trackChanges);
+            var reviewEntity = await _repository.Review.GetReviewAsync(reviewId, trackChanges);
 
             if(reviewEntity is null)
                 throw new ReviewNotFoundException(reviewId);
@@ -114,28 +114,28 @@ namespace Service
 
         }
 
-        public IEnumerable<ReviewDto> GetReviewsOfFood(Guid foodId, bool trackChanges)
+        public async Task<IEnumerable<ReviewDto>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges)
         {
-            var reviews = _repository.Review.GetReviewsOfFood(foodId, trackChanges);
+            var reviews = await _repository.Review.GetReviewsOfFoodAsync(foodId, trackChanges);
             var reviewDto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
             return reviewDto;
         }
 
-        public void SaveChangesForPatch(ReviewForUpdateDto reviewToPatch, Review reviewEntity)
+        public async Task SaveChangesForPatchAsync(ReviewForUpdateDto reviewToPatch, Review reviewEntity)
         {
             _mapper.Map(reviewToPatch, reviewEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public void UpdateReview(Guid reviewId, ReviewForUpdateDto review, bool trackChanges)
+        public async Task UpdateReviewAsync(Guid reviewId, ReviewForUpdateDto review, bool trackChanges)
         {
-            var reviewEntity = _repository.Review.GetReview(reviewId, trackChanges);
+            var reviewEntity = await _repository.Review.GetReviewAsync(reviewId, trackChanges);
 
             if(reviewEntity is null)
                 throw new ReviewNotFoundException(reviewId);
 
             _mapper.Map(review, reviewEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
 
         }

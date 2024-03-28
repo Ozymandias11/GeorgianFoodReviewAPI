@@ -11,11 +11,11 @@ namespace Service.Contracts
 {
     public interface ICountryService
     {
-        IEnumerable<CountryDto> GetAllCountries(bool trackChanges);
-        CountryDto GetCountry(Guid countryId, bool trackChanges);
-        CountryDto CreateCountry(CountryForCreationDto country);
-        void DeleteCountry(Guid countryId, bool trackChanges);
-        void UpdateCountry(Guid countryId,CountryForUpdateDto country,  bool trackChanges);
+        Task<IEnumerable<CountryDto>> GetAllCountriesAsync(bool trackChanges);
+        Task<CountryDto> GetCountryAsync(Guid countryId, bool trackChanges);
+        Task<CountryDto> CreateCountryAsync(CountryForCreationDto country);
+        Task DeleteCountryAsync(Guid countryId, bool trackChanges);
+        Task UpdateCountryAsync(Guid countryId,CountryForUpdateDto country,  bool trackChanges);
 
     }
 }

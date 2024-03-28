@@ -21,21 +21,21 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public IActionResult GetCountries()
+        public async Task<IActionResult> GetCountries()
         {
-            var countries = _service.CountryService.GetAllCountries(trackChanges:false);
+            var countries = await _service.CountryService.GetAllCountriesAsync(trackChanges:false);
             return Ok(countries);
         }
 
         [HttpGet("{id:guid}", Name = "CountryById")]
-        public IActionResult GetCountry(Guid id)
+        public async Task<IActionResult> GetCountry(Guid id)
         {
-            var country = _service.CountryService.GetCountry(id, trackChanges: false);
+            var country = await _service.CountryService.GetCountryAsync(id, trackChanges: false);
             return Ok(country);
         }
 
         [HttpPost]
-        public IActionResult CreateCountry([FromBody] CountryForCreationDto country)
+        public async Task<IActionResult> CreateCountry([FromBody] CountryForCreationDto country)
         {
 
             if(country is null)
@@ -46,20 +46,20 @@ namespace GeorgianFoodReviewAPI.Presentation
 
 
 
-            var createdCountry = _service.CountryService.CreateCountry(country);
+            var createdCountry = await _service.CountryService.CreateCountryAsync(country);
 
             return CreatedAtRoute("CountryById", new { id = createdCountry.Id }, createdCountry);
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteCountry(Guid id)
+        public async Task<IActionResult> DeleteCountry(Guid id)
         {
-            _service.CountryService.DeleteCountry(id, trackChanges:false);
+            await _service.CountryService.DeleteCountryAsync(id, trackChanges:false);
             return NoContent();
         }
 
         [HttpPut("{id:Guid}")]
-        public IActionResult UpdateCountry(Guid id, [FromBody] CountryForUpdateDto country)
+        public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] CountryForUpdateDto country)
         {
             if (country is null)
                 return BadRequest("CountryForUpdateDto is null");
@@ -67,7 +67,7 @@ namespace GeorgianFoodReviewAPI.Presentation
             if (!ModelState.IsValid)
                 return UnprocessableEntity(ModelState);
 
-            _service.CountryService.UpdateCountry(id,country, trackChanges:true);
+            await _service.CountryService.UpdateCountryAsync(id,country, trackChanges:true);
             return NoContent(); 
         }
 

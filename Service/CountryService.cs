@@ -28,10 +28,10 @@ namespace Service
 
         }
 
-        public CountryDto CreateCountry(CountryForCreationDto country)
+        public async Task<CountryDto> CreateCountryAsync(CountryForCreationDto country)
         {
 
-            var duplicateCountry = _repository.Country.GetCountryByName(country.Name);
+            var duplicateCountry = await _repository.Country.GetCountryByNameAsync(country.Name);
 
             if(duplicateCountry != null)
             {
@@ -41,24 +41,24 @@ namespace Service
             var countryEntity = _mapper.Map<Country>(country);
 
             _repository.Country.CreateCountry(countryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
             var countryToReturn = _mapper.Map<CountryDto>(countryEntity);
             return countryToReturn;
         }
 
-        public IEnumerable<CountryDto> GetAllCountries(bool trackChanges)
+        public async Task<IEnumerable<CountryDto>> GetAllCountriesAsync(bool trackChanges)
         {
-            var countries = _repository.Country.GetAllCountries(trackChanges);
+            var countries = await _repository.Country.GetAllCountriesAsync(trackChanges);
 
             var countriesDto = _mapper.Map<IEnumerable<CountryDto>>(countries);
             return countriesDto;
 
         }
 
-        public CountryDto GetCountry(Guid countryId, bool trackChanges)
+        public async Task<CountryDto> GetCountryAsync(Guid countryId, bool trackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, trackChanges);
+            var country = await _repository.Country.GetCountryAsync(countryId, trackChanges);
 
             if(country is null)
             {
@@ -71,26 +71,26 @@ namespace Service
 
         }
 
-        public void DeleteCountry(Guid countryId, bool trackChanges)
+        public async Task DeleteCountryAsync(Guid countryId, bool trackChanges)
         {
-            var country = _repository.Country.GetCountry(countryId, trackChanges);
+            var country = await _repository.Country.GetCountryAsync(countryId, trackChanges);
 
             if (country is null)
                 throw new CountryNotFoundException(countryId);
 
             _repository.Country.DeleteCountry(country);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public void UpdateCountry(Guid countryId,CountryForUpdateDto country, bool trackChanges)
+        public async Task UpdateCountryAsync(Guid countryId,CountryForUpdateDto country, bool trackChanges)
         {
-            var countryEntity = _repository.Country.GetCountry(countryId, trackChanges);
+            var countryEntity = await _repository.Country.GetCountryAsync(countryId, trackChanges);
 
             if(countryEntity is null)
                 throw new CountryNotFoundException(countryId);
 
             _mapper.Map(country, countryEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
 
         }
     }

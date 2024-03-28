@@ -11,10 +11,10 @@ namespace Service.Contracts
 {
     public interface IFoodService
     {
-        IEnumerable<FoodDto> GetAllFoods(bool trackChanges);
-        FoodDto GetFood(Guid foodId, bool trackChanges);
-        FoodDto CreateFood(Guid CategoryID, FoodForCreationDto food, bool trackChanges);
-        void DeleteFood(Guid foodId, bool trackChanges);
-        void UpdateFood(Guid foodId, FoodForUpdateDto food, bool trackChanges); 
+        Task<IEnumerable<FoodDto>> GetAllFoodsAsync(bool trackChanges);
+        Task<FoodDto> GetFoodAsync(Guid foodId, bool trackChanges);
+        Task<FoodDto> CreateFoodAsync(Guid CategoryID, FoodForCreationDto food, bool trackChanges);
+        Task DeleteFoodAsync(Guid foodId, bool trackChanges);
+        Task UpdateFoodAsync(Guid foodId, FoodForUpdateDto food, bool trackChanges); 
     }
 }

@@ -9,9 +9,9 @@ namespace Contracts
 {
     public interface ICountryRepository
     {
-        IEnumerable<Country> GetAllCountries(bool trackChanges);
-        Country GetCountry(Guid countryId, bool trackChanges);
-        Country GetCountryByName(string name);
+        Task<IEnumerable<Country>> GetAllCountriesAsync(bool trackChanges);
+        Task<Country> GetCountryAsync(Guid countryId, bool trackChanges);
+        Task<Country> GetCountryByNameAsync(string name);
         void CreateCountry(Country country);
         void DeleteCountry(Country country);
 

@@ -12,18 +12,18 @@ namespace Service.Contracts
 {
     public interface IReviewService
     {
-        IEnumerable<ReviewDto> GetAllReviews(bool trackChnages);
-        ReviewDto GetReview(Guid reviewId, bool trackChnages);
-        IEnumerable<ReviewDto> GetReviewsOfFood(Guid foodId, bool trackChanges);
-        ReviewDto CreateReview(Guid reviewerId, Guid foodId,
+        Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(bool trackChnages);
+        Task<ReviewDto> GetReviewAsync(Guid reviewId, bool trackChnages);
+        Task<IEnumerable<ReviewDto>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges);
+        Task<ReviewDto> CreateReviewAsync(Guid reviewerId, Guid foodId,
                                          ReviewForCreationDto review, bool trackChanges);
-        void DeleteReview(Guid reviewId, bool trackChanges);
-        void DeleteReviewsOfReviewer(Guid reviewerId, bool trackChanges);
-        void UpdateReview(Guid reviewId, ReviewForUpdateDto review, bool trackChanges);
+        Task DeleteReviewAsync(Guid reviewId, bool trackChanges);
+        Task DeleteReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges);
+        Task UpdateReviewAsync(Guid reviewId, ReviewForUpdateDto review, bool trackChanges);
 
-        (ReviewForUpdateDto reviewToPatch, Review reviewEntity)
-          GetReviewForPatch(Guid reviewId, bool trackChanges);
-        void SaveChangesForPatch(ReviewForUpdateDto reviewToPatch, Review reviewEntity);
+        Task<(ReviewForUpdateDto reviewToPatch, Review reviewEntity)>
+          GetReviewForPatchAsync(Guid reviewId, bool trackChanges);
+        Task SaveChangesForPatchAsync(ReviewForUpdateDto reviewToPatch, Review reviewEntity);
 
     }
 }
