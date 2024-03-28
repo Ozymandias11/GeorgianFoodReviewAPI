@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
@@ -35,14 +36,10 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateFood(Guid categoryId, [FromBody] FoodForCreationDto food)
         {
-            if (food is null)
-                return BadRequest("FoodForCreationDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
+           
             var createdFood = await _service.FoodService.CreateFoodAsync(categoryId, food, trackChanges:false);
 
             return CreatedAtRoute("GetFoodById",new { categoryId, id = createdFood.id }, createdFood);
@@ -57,17 +54,13 @@ namespace GeorgianFoodReviewAPI.Presentation
 
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateFood(Guid id, [FromBody] FoodForUpdateDto food)
         {
 
-            if (food is null)
-                return BadRequest("FoodForUpdateDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
             await _service.FoodService.UpdateFoodAsync(id, food, trackChanges: true);
             return NoContent();
+
         }
 
 

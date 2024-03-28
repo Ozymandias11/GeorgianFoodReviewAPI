@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
@@ -46,14 +47,10 @@ namespace GeorgianFoodReviewAPI.Presentation
 
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateReview(Guid reviewerId, Guid FoodId, [FromBody]
                                              ReviewForCreationDto review)
         {
-            if (review is null)
-                return BadRequest("ReviewForCreationDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
 
             var reviewCreated = await _service.ReviewService.CreateReviewAsync(reviewerId, FoodId, review,
                                          trackChanges: false);
@@ -76,6 +73,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateReview(Guid id, [FromBody] ReviewForUpdateDto review)
         {
             await _service.ReviewService.UpdateReviewAsync(id, review, trackChanges: true);

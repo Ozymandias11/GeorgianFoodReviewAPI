@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
@@ -35,16 +36,9 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCountry([FromBody] CountryForCreationDto country)
         {
-
-            if(country is null)
-                return BadRequest("CountryToCreateDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
-
 
             var createdCountry = await _service.CountryService.CreateCountryAsync(country);
 
@@ -59,14 +53,10 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPut("{id:Guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] CountryForUpdateDto country)
         {
-            if (country is null)
-                return BadRequest("CountryForUpdateDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
+         
             await _service.CountryService.UpdateCountryAsync(id,country, trackChanges:true);
             return NoContent(); 
         }

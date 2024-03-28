@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
@@ -36,16 +37,10 @@ namespace GeorgianFoodReviewAPI.Presentation
             return Ok(category);
         }
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] CategoryToCreateDto category)
         {
-            if (category == null)
-                return BadRequest("CategoryToCreateDto is null");
-
-            if(!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-              
-            
-
+           
             var createdCategory = await _service.CategoryService.CreateCategoryAsync(category);
 
             return CreatedAtRoute("CategoryById", new { id = createdCategory.CategoryId},createdCategory);
@@ -60,17 +55,13 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
         {
 
-            if (category is null)
-                return BadRequest("CategoryForUpdate Dto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
-            await _service.CategoryService.UpdateCatgeoryAsync(id, category, trackChanges:true);
+            await _service.CategoryService.UpdateCatgeoryAsync(id, category, trackChanges: true);
             return NoContent();
+
         }
 
 

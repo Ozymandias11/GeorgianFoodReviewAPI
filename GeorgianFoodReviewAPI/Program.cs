@@ -1,5 +1,6 @@
 using Contracts;
 using GeorgianFoodReviewAPI.Extensions;
+using GeorgianFoodReviewAPI.Presentation.ActionFilters;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
@@ -31,6 +32,10 @@ new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
 .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
 .OfType<NewtonsoftJsonPatchInputFormatter>().First();
 
+
+
+// Action filter
+builder.Services.AddScoped<ValidationFilterAttribute>();
 
 //this code portion helps API to route incoming requests
 builder.Services.AddControllers(config =>

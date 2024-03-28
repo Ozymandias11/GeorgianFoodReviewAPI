@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
@@ -43,14 +44,10 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateReviewerForCountry(Guid countryId, [FromBody] ReviewerForCreationDto reviewer)
         {
-            if (reviewer is null)
-                return BadRequest("ReviewerForCreationDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
+           
             var createdReviewer = await _service.ReviewerService.CreateReviewerForCountryAsync(countryId, reviewer, 
                 trackChanges:false);
 
@@ -66,15 +63,11 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpPut("country/{countryId:Guid}/reviewer/{reviewerId:Guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateReviewerForCountry(Guid countryId, Guid reviewerId, [FromBody] 
                                                          ReviewerForUpdateDto reviewer)
         {
-            if (reviewer is null)
-                return BadRequest("ReviewerForUpdateDto is null");
-
-            if (!ModelState.IsValid)
-                return UnprocessableEntity(ModelState);
-
+            
             await _service.ReviewerService.UpdateReviewerForCountryAsync(countryId, reviewerId, reviewer, countryTrackChanges: false,
                                                               reviewerTrackChanges: true);
             return NoContent();
