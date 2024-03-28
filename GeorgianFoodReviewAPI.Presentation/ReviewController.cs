@@ -91,7 +91,13 @@ namespace GeorgianFoodReviewAPI.Presentation
                 return UnprocessableEntity(ModelState);
 
             var result = _service.ReviewService.GetReviewForPatch(id, trackChanges: true);
+
             patchDoc.ApplyTo(result.reviewToPatch);
+
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            TryValidateModel(result.reviewToPatch);
 
             _service.ReviewService.SaveChangesForPatch(result.reviewToPatch, result.reviewEntity);
             return NoContent(); 

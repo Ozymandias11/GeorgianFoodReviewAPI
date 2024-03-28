@@ -90,6 +90,11 @@ namespace GeorgianFoodReviewAPI.Presentation
 
             patchDoc.ApplyTo(result.reviewerToPatch);
 
+            if (!ModelState.IsValid)
+                return UnprocessableEntity(ModelState);
+
+            TryValidateModel(result.reviewerToPatch);
+
             _service.ReviewerService.SaveChangesForPatch(result.reviewerToPatch, result.reviwerEntity);
 
             return NoContent();
