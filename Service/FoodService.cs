@@ -6,6 +6,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,15 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly ValidationService _validationService;
 
-        public FoodService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public FoodService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper ,
+                              ValidationService validationService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _validationService = validationService;
 
         }
 
@@ -50,18 +54,16 @@ namespace Service
 
         public async Task DeleteFoodAsync(Guid foodId, bool trackChanges)
         {
-            var foodEntity = await _repository.Food.GetFoodAsync(foodId, trackChanges);
-            
-            if(foodEntity is null)
-                throw new FoodNotFoundException(foodId);
+            var foodEntity = await _validationService.GetFoodAndCheckIfItExists(foodId, trackChanges);
+          
 
             _repository.Food.DeleteFood(foodEntity);
             await _repository.SaveAsync();
         }
 
-        public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(bool trackChanges)
+        public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(FoodParameters foodParameters ,bool trackChanges)
         {
-            var foods = await _repository.Food.GetAllFoodsAsync(trackChanges);
+            var foods = await _repository.Food.GetAllFoodsAsync(foodParameters ,trackChanges);
             var foodsDto = _mapper.Map<IEnumerable<FoodDto>>(foods);
 
             return foodsDto;
@@ -69,11 +71,8 @@ namespace Service
 
         public async Task<FoodDto> GetFoodAsync(Guid foodId, bool trackChanges)
         {
-            var food = await _repository.Food.GetFoodAsync(foodId, trackChanges);
+            var food = await _validationService.GetFoodAndCheckIfItExists(foodId, trackChanges);
 
-            if(food is null)
-                throw new FoodNotFoundException(foodId);
-            
 
             var foodDto = _mapper.Map<FoodDto>(food);
             return foodDto;
@@ -82,14 +81,12 @@ namespace Service
 
         public async Task UpdateFoodAsync(Guid foodId, FoodForUpdateDto food, bool trackChanges)
         {
-            var foodEntity = await _repository.Food.GetFoodAsync(foodId, trackChanges);
-
-            if (foodEntity is null)
-                throw new FoodNotFoundException(foodId);
+            var foodEntity = await _validationService.GetFoodAndCheckIfItExists(foodId, trackChanges);
 
             _mapper.Map(food, foodEntity);  
             await _repository.SaveAsync();
 
         }
+
     }
 }

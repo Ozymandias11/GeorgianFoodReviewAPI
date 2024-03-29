@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +24,9 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllReviews()
+        public async Task<IActionResult> GetAllReviews([FromQuery] ReviewParameters reviewParameters)
         {
-            var reviews = await _service.ReviewService.GetAllReviewsAsync(trackChnages: false);
+            var reviews = await _service.ReviewService.GetAllReviewsAsync(reviewParameters, trackChnages: false);
             return Ok(reviews);
         }
 

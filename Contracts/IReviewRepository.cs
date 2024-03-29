@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Contracts
 {
     public interface IReviewRepository
     {
-        Task<IEnumerable<Review>> GetAllReviewsAsync(bool trackChanges);
+        Task<IEnumerable<Review>> GetAllReviewsAsync(ReviewParameters reviewParameters ,bool trackChanges);
         Task<Review> GetReviewAsync(Guid reviewId, bool trackChanges);
         Task<IEnumerable<Review>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges);
         Task<IEnumerable<Review>> GetReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges);

@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,11 @@ namespace Repository.RepositoryUserClasses
         public void DeleteFood(Food food) => Delete(food);
         
 
-        public async Task<IEnumerable<Food>> GetAllFoodsAsync(bool trackChanges)
-            => await FindAll(trackChanges).OrderBy(f => f.Name).ToListAsync();
+        public async Task<IEnumerable<Food>> GetAllFoodsAsync(FoodParameters foodParameters, bool trackChanges)
+            => await FindAll(trackChanges).OrderBy(f => f.Name)
+            .Skip((foodParameters.PageNumber - 1) * foodParameters.PageSize)
+            .Take(foodParameters.PageSize)
+            .ToListAsync();
 
 
         public async Task<Food> GetFoodAsync(Guid foodId, bool trackChanges)

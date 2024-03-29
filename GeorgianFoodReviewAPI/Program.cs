@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
 using NLog;
+using Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.AddAutoMapper(typeof(Program));
 
 
+
 NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter() =>
 new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
 .Services.BuildServiceProvider()
@@ -36,6 +38,8 @@ new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
 
 // Action filter
 builder.Services.AddScoped<ValidationFilterAttribute>();
+
+builder.Services.AddScoped<ValidationService>();
 
 //this code portion helps API to route incoming requests
 builder.Services.AddControllers(config =>

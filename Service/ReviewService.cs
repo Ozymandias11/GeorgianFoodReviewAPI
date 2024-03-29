@@ -6,6 +6,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,15 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly ValidationService _validationService;
 
-        public ReviewService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public ReviewService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, 
+                               ValidationService validationService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _validationService = validationService;
 
         }
 
@@ -54,10 +58,7 @@ namespace Service
 
         public async Task DeleteReviewAsync(Guid reviewId, bool trackChanges)
         {
-            var reviewEntity = await _repository.Review.GetReviewAsync(reviewId, trackChanges);
-
-            if(reviewEntity is null)
-                throw new ReviewNotFoundException(reviewId);
+            var reviewEntity = await _validationService.GetReviewAndCheckIfItExists(reviewId, trackChanges);
 
             _repository.Review.DeteleReview(reviewEntity);
             await _repository.SaveAsync();
@@ -66,7 +67,7 @@ namespace Service
 
         public async Task DeleteReviewsOfReviewerAsync(Guid reviewerId, bool trackChanges)
         {
-            var reviewerEntity = _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
+            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
 
             if (reviewerEntity is null)
                 throw new ReviewerNotFoundException(reviewerId);
@@ -81,21 +82,19 @@ namespace Service
 
         }
 
-        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(bool trackChnages)
+        public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(ReviewParameters reviewParameters, bool trackChanges)
         {
-            var reviews = await _repository.Review.GetAllReviewsAsync(trackChnages);
+            var reviews = await _repository.Review.GetAllReviewsAsync( reviewParameters, trackChanges);
             
             var reviewsDto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
 
             return reviewsDto;
         }
 
-        public async Task<ReviewDto> GetReviewAsync(Guid reviewId, bool trackChnages)
+        public async Task<ReviewDto> GetReviewAsync(Guid reviewId, bool trackChanges)
         {
-            var review = await _repository.Review.GetReviewAsync(reviewId, trackChnages);
+            var review = await _validationService.GetReviewAndCheckIfItExists(reviewId, trackChanges);
 
-            if(review is null)
-                throw new ReviewNotFoundException(reviewId);
 
             var reviewDto = _mapper.Map<ReviewDto>(review);
             return reviewDto;
@@ -129,10 +128,9 @@ namespace Service
 
         public async Task UpdateReviewAsync(Guid reviewId, ReviewForUpdateDto review, bool trackChanges)
         {
-            var reviewEntity = await _repository.Review.GetReviewAsync(reviewId, trackChanges);
+            var reviewEntity = await _validationService.GetReviewAndCheckIfItExists(reviewId, trackChanges);
 
-            if(reviewEntity is null)
-                throw new ReviewNotFoundException(reviewId);
+            
 
             _mapper.Map(review, reviewEntity);
             await _repository.SaveAsync();

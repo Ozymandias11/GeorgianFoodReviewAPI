@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,9 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFoods()
+        public async Task<IActionResult> GetAllFoods([FromQuery] FoodParameters foodParameters)
         {
-            var foods = await _service.FoodService.GetAllFoodsAsync(trackChanges: false);
+            var foods = await _service.FoodService.GetAllFoodsAsync(foodParameters ,trackChanges: false);
             return Ok(foods);
         }
 

@@ -6,6 +6,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,15 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly ValidationService _validationService;
 
-        public CountryService (IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public CountryService (IRepositoryManager repository, ILoggerManager logger, IMapper mapper, 
+            ValidationService validationService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _validationService = validationService;
 
         }
 
@@ -47,9 +51,9 @@ namespace Service
             return countryToReturn;
         }
 
-        public async Task<IEnumerable<CountryDto>> GetAllCountriesAsync(bool trackChanges)
+        public async Task<IEnumerable<CountryDto>> GetAllCountriesAsync( CountryParameters countryParameters ,bool trackChanges)
         {
-            var countries = await _repository.Country.GetAllCountriesAsync(trackChanges);
+            var countries = await _repository.Country.GetAllCountriesAsync(countryParameters ,trackChanges);
 
             var countriesDto = _mapper.Map<IEnumerable<CountryDto>>(countries);
             return countriesDto;
@@ -58,13 +62,9 @@ namespace Service
 
         public async Task<CountryDto> GetCountryAsync(Guid countryId, bool trackChanges)
         {
-            var country = await _repository.Country.GetCountryAsync(countryId, trackChanges);
+            var country = await _validationService.GetCountryAndCheckItIfExists(countryId, trackChanges);
 
-            if(country is null)
-            {
-                throw new CountryNotFoundException(countryId);
-            }
-
+          
             var countryDto = _mapper.Map<CountryDto>(country);
             return countryDto;
 
@@ -73,25 +73,21 @@ namespace Service
 
         public async Task DeleteCountryAsync(Guid countryId, bool trackChanges)
         {
-            var country = await _repository.Country.GetCountryAsync(countryId, trackChanges);
+            var country = await _validationService.GetCountryAndCheckItIfExists(countryId, trackChanges);
 
-            if (country is null)
-                throw new CountryNotFoundException(countryId);
-
+         
             _repository.Country.DeleteCountry(country);
             await _repository.SaveAsync();
         }
 
         public async Task UpdateCountryAsync(Guid countryId,CountryForUpdateDto country, bool trackChanges)
         {
-            var countryEntity = await _repository.Country.GetCountryAsync(countryId, trackChanges);
-
-            if(countryEntity is null)
-                throw new CountryNotFoundException(countryId);
+            var countryEntity = await _validationService.GetCountryAndCheckItIfExists(countryId, trackChanges);
 
             _mapper.Map(country, countryEntity);
             await _repository.SaveAsync();
 
         }
+
     }
 }

@@ -6,6 +6,7 @@ using Service.Contracts;
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,21 +20,21 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly ValidationService _validationService;
 
-        public ReviewerService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public ReviewerService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, 
+                                ValidationService validation)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _validationService = validation;
 
         }
 
         public async Task<ReviewerDto> CreateReviewerForCountryAsync(Guid countryId, ReviewerForCreationDto reviewer, bool trackChanges)
         {
-            var country =  await _repository.Country.GetCountryAsync(countryId, trackChanges);
-
-            if(country is null)
-                throw new CountryNotFoundException(countryId);
+            var country = await _validationService.GetCountryAndCheckItIfExists(countryId, trackChanges);
 
             var ReviewerEntity = _mapper.Map<Reviewer>(reviewer);
 
@@ -48,10 +49,7 @@ namespace Service
 
         public async Task DeleteReviewerAsync(Guid reviewerId, bool trackChanges)
         {
-            var reviewer = await _repository.Reviewer.GetRevieweverAsync(reviewerId, trackChanges);
-
-            if(reviewer is null)
-                throw new ReviewerNotFoundException(reviewerId);
+            var reviewer = await _validationService.GetReviewerAndCheckIfItExists(reviewerId, trackChanges);
 
             _repository.Reviewer.DeleteReviewer(reviewer);
             await _repository.SaveAsync();
@@ -59,9 +57,9 @@ namespace Service
 
         }
 
-        public async Task<IEnumerable<ReviewerDto>> GetAllReviewersAsync(bool trackChanges)
+        public async Task<IEnumerable<ReviewerDto>> GetAllReviewersAsync(ReviewerParameters reviewerParameters, bool trackChanges)
         {
-            var reviewers = await _repository.Reviewer.GetAllReveiwersAsync(trackChanges);
+            var reviewers = await _repository.Reviewer.GetAllReveiwersAsync(reviewerParameters,trackChanges);
 
             var reviewersDto = _mapper.Map<IEnumerable<ReviewerDto>>(reviewers);
 
@@ -71,12 +69,9 @@ namespace Service
 
         public async Task<ReviewerDto> GetReviewerAsync(Guid id, bool trackChanges)
         {
-            var reviewer =  await _repository.Reviewer.GetRevieweverAsync(id, trackChanges);
+            var reviewer =  await _validationService.GetReviewerAndCheckIfItExists(id, trackChanges);
 
-            if(reviewer is null)
-                throw new ReviewerNotFoundException(id);
-
-
+            
             var reviewerDto = _mapper.Map<ReviewerDto>(reviewer);
             return reviewerDto;
 
@@ -90,9 +85,8 @@ namespace Service
             if (country is null)
                 throw new CountryNotFoundException(countryId);
 
-            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(reviewerId, reviewerTrackChanges);
-            if(reviewerEntity is null)
-                throw new ReviewerNotFoundException(reviewerId);
+            var reviewerEntity = await _validationService.GetReviewerAndCheckIfItExists(countryId, reviewerTrackChanges);
+          
 
             var reviewToPatch = _mapper.Map<ReviewerForUpdateDto>(reviewerEntity);
 
@@ -131,11 +125,9 @@ namespace Service
             if(country is null)
                 throw new CountryNotFoundException(countryId);
 
-            var reviewerEntity = await _repository.Reviewer.GetRevieweverAsync(ReviewerId, reviewerTrackChanges);
+            var reviewerEntity = await _validationService.GetReviewerAndCheckIfItExists(ReviewerId, reviewerTrackChanges);
 
-            if (reviewerEntity is null)
-                throw new ReviewerNotFoundException(ReviewerId);
-
+          
             _mapper.Map(reviewer, reviewerEntity);
             await _repository.SaveAsync();
 

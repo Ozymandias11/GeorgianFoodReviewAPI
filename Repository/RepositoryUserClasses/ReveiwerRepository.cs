@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,8 +28,11 @@ namespace Repository.RepositoryUserClasses
             
         
 
-        public async Task<IEnumerable<Reviewer>> GetAllReveiwersAsync(bool trackChanges)
-             => await FindAll(trackChanges).OrderBy(re => re.Id).ToListAsync();
+        public async Task<IEnumerable<Reviewer>> GetAllReveiwersAsync(ReviewerParameters reviewerParameters,bool trackChanges)
+             => await FindAll(trackChanges).OrderBy(re => re.Id)
+            .Skip((reviewerParameters.PageNumber - 1) * reviewerParameters.PageSize)
+            .Take(reviewerParameters.PageSize)
+            .ToListAsync();
 
         public async Task<IEnumerable<Reviewer>> GetReviewersOfCountryAsync(Guid countryId, bool trackChanges)
             => await FindByCondition(re => re.CountryId == countryId, trackChanges).ToListAsync();

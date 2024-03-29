@@ -19,22 +19,25 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
+        private readonly ValidationService _validationService;
 
-        public CategoryService(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        public CategoryService(IRepositoryManager repository, ILoggerManager logger, 
+            IMapper mapper, ValidationService validationService)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
-            
+            _validationService = validationService;
+
         }
 
         public async Task<CategoryDto> CreateCategoryAsync(CategoryToCreateDto category)
         {
             var categoryDuplicate = await _repository.Category.GetCategoryByNameAsync(category.name);
+
             if(categoryDuplicate != null)
-            {
                 throw new CategoryAlreadyExistsException(category.name);
-            }
+
 
             var categoryEntity = _mapper.Map<Category>(category);
 
@@ -49,11 +52,8 @@ namespace Service
 
         public async Task DeleteCategoryAsync(Guid categoryId, bool trackChanges)
         {
-            var category = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
+            var category = await _validationService.GetCategoryAndCheckIfItExists(categoryId, trackChanges);
             
-            if(category is null)
-                throw new CategoryNotFoundException(categoryId);
-
             var foods = await _repository.Food.GetFoodsByCategoryAsync(categoryId, trackChanges);
 
            foreach(var food in foods)
@@ -78,10 +78,8 @@ namespace Service
 
         public async Task<CategoryDto> GetCategoryAsync(Guid categoryId, bool trackChanges)
         {
-            var category = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
 
-            if(category is null)
-                throw new CategoryNotFoundException(categoryId);
+            var category = await _validationService.GetCategoryAndCheckIfItExists(categoryId, trackChanges);
 
             var categoryDto = _mapper.Map<CategoryDto>(category);
             return categoryDto;
@@ -89,15 +87,16 @@ namespace Service
 
         public async Task UpdateCatgeoryAsync(Guid categoryId, CategoryForUpdateDto category, bool trackChanges)
         {
-            var categoryEntity = await _repository.Category.GetCategoryAsync(categoryId, trackChanges);
+            var categoryEntity = await _validationService.GetCategoryAndCheckIfItExists(categoryId, trackChanges);
 
-            if (categoryEntity is null)
-                throw new CategoryNotFoundException(categoryId);
 
             _mapper.Map(category, categoryEntity);
             await _repository.SaveAsync();
 
 
         }
+
+
+
     }
 }

@@ -16,13 +16,14 @@ namespace Service
         private readonly Lazy<IFoodService> _foodService;
         private readonly Lazy<IReviewerService> _reviewerService;
         private readonly Lazy<IReviewService> _reviewService;
-        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager loggerManager, IMapper mapper)
+        public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager loggerManager,
+            IMapper mapper, ValidationService validationService)
         {
-            _categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, loggerManager, mapper));
-            _countryService = new Lazy<ICountryService>(() => new CountryService(repositoryManager, loggerManager, mapper));
-            _foodService = new Lazy<IFoodService>(() => new FoodService(repositoryManager, loggerManager, mapper));
-            _reviewerService = new Lazy<IReviewerService>(() => new ReviewerService(repositoryManager, loggerManager, mapper));
-            _reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, loggerManager, mapper));
+            _categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, loggerManager, mapper, validationService));
+            _countryService = new Lazy<ICountryService>(() => new CountryService(repositoryManager, loggerManager, mapper, validationService));
+            _foodService = new Lazy<IFoodService>(() => new FoodService(repositoryManager, loggerManager, mapper, validationService));
+            _reviewerService = new Lazy<IReviewerService>(() => new ReviewerService(repositoryManager, loggerManager, mapper, validationService));
+            _reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, loggerManager, mapper, validationService));
         }
 
         public ICategoryService CategoryService => _categoryService.Value;

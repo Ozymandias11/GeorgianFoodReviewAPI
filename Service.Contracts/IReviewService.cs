@@ -2,6 +2,7 @@
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Service.Contracts
 {
     public interface IReviewService
     {
-        Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(bool trackChnages);
+        Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(ReviewParameters reviewParameters ,bool trackChnages);
         Task<ReviewDto> GetReviewAsync(Guid reviewId, bool trackChnages);
         Task<IEnumerable<ReviewDto>> GetReviewsOfFoodAsync(Guid foodId, bool trackChanges);
         Task<ReviewDto> CreateReviewAsync(Guid reviewerId, Guid foodId,
