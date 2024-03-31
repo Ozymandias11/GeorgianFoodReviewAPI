@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
@@ -33,9 +34,10 @@ namespace Repository.RepositoryUserClasses
         // we have include redudancies, do not forget to fix
         
         public async Task<IEnumerable<Review>> GetAllReviewsAsync(ReviewParameters reviewParameters, bool trackChanges)
-             => await FindAll(trackChanges)
+             => await FindByCondition(r => r.rating >= reviewParameters.MinRating && r.rating <= reviewParameters.MaxRating, 
+                 trackChanges)
             .Include(r => r.Food)
-            .OrderBy(r => r.Title)
+            .Sort(reviewParameters.OrderBy)
             .Skip((reviewParameters.PageNumber - 1) * reviewParameters.PageSize)
             .Take(reviewParameters.PageSize)
             .ToListAsync();

@@ -8,6 +8,7 @@ namespace Shared.RequestFeatures
 {
    public class FoodParameters : RequestParameters
     {
-
+        public FoodParameters() => OrderBy = "name";
+        public string? SearchTerm { get; set; }
     }
 }

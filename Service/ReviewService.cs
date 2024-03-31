@@ -85,7 +85,11 @@ namespace Service
         public async Task<IEnumerable<ReviewDto>> GetAllReviewsAsync(ReviewParameters reviewParameters, bool trackChanges)
         {
             var reviews = await _repository.Review.GetAllReviewsAsync( reviewParameters, trackChanges);
-            
+
+            if (!reviewParameters.ValidRatingRange)
+                throw new Exception();
+
+
             var reviewsDto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
 
             return reviewsDto;

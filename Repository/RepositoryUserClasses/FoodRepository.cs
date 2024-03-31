@@ -1,6 +1,7 @@
 ﻿using Contracts;
 using Entities.Models;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 using Shared.RequestFeatures;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace Repository.RepositoryUserClasses
         
 
         public async Task<IEnumerable<Food>> GetAllFoodsAsync(FoodParameters foodParameters, bool trackChanges)
-            => await FindAll(trackChanges).OrderBy(f => f.Name)
+            => await FindAll(trackChanges)
+            .Search(foodParameters.SearchTerm)
+            .Sort(foodParameters.OrderBy)
             .Skip((foodParameters.PageNumber - 1) * foodParameters.PageSize)
             .Take(foodParameters.PageSize)
             .ToListAsync();
