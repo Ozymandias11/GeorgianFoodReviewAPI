@@ -64,6 +64,7 @@ namespace Service
         public async Task<IEnumerable<FoodDto>> GetAllFoodsAsync(FoodParameters foodParameters ,bool trackChanges)
         {
             var foods = await _repository.Food.GetAllFoodsAsync(foodParameters ,trackChanges);
+
             var foodsDto = _mapper.Map<IEnumerable<FoodDto>>(foods);
 
             return foodsDto;

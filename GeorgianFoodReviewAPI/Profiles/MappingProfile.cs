@@ -3,6 +3,7 @@ using Entities.Models;
 using Shared.DataTransferObjects.DtosForGet;
 using Shared.DataTransferObjects.DtosForPost;
 using Shared.DataTransferObjects.DtosForPut;
+using Shared.UserDtos;
 
 namespace GeorgianFoodReviewAPI.Profiles
 {
@@ -39,7 +40,9 @@ namespace GeorgianFoodReviewAPI.Profiles
 
             CreateMap<CategoryForUpdateDto, Category>();
 
-            CreateMap<ReviewForUpdateDto, Review>().ReverseMap(); ;
+            CreateMap<ReviewForUpdateDto, Review>().ReverseMap();
+
+            CreateMap<UserForRegistrationDto, User>();
                
                 
                

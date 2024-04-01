@@ -21,6 +21,8 @@ namespace Repository.RepositoryUserClasses
         public void CreateFood(Food food) => Create(food);
 
         public void DeleteFood(Food food) => Delete(food);
+
+       
         
 
         public async Task<IEnumerable<Food>> GetAllFoodsAsync(FoodParameters foodParameters, bool trackChanges)

@@ -1,4 +1,5 @@
 ﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
@@ -14,6 +15,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
     [Route("api/categories")]
     [ApiController]
+    [Authorize(Roles = "Administrator")]
     public  class CategoryController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -23,6 +25,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
+        [HttpHead]
         public async Task<IActionResult> GetCategories()
         {
             
@@ -38,6 +41,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateCategoryAsync([FromBody] CategoryToCreateDto category)
         {
            
@@ -48,6 +52,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
             await _service.CategoryService.DeleteCategoryAsync(id, trackChanges:false);
@@ -56,12 +61,20 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto category)
         {
 
             await _service.CategoryService.UpdateCatgeoryAsync(id, category, trackChanges: true);
             return NoContent();
 
+        }
+
+        [HttpOptions]
+        public IActionResult GetCategoryOptions()
+        {
+            Response.Headers.Add("Allow", "Get, Options, Post, Put, Delete");
+            return Ok();
         }
 
 

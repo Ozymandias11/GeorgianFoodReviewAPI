@@ -1,4 +1,5 @@
 ﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
 using Shared.DataTransferObjects.DtosForPost;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace GeorgianFoodReviewAPI.Presentation
 {
+    
     [Route("api/foods")]
     [ApiController]
     public class FoodController : ControllerBase
@@ -23,6 +25,8 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
+        [Authorize(Roles = "Manager, Administrator")]
+
         public async Task<IActionResult> GetAllFoods([FromQuery] FoodParameters foodParameters)
         {
             var foods = await _service.FoodService.GetAllFoodsAsync(foodParameters ,trackChanges: false);
@@ -30,6 +34,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet("{id:guid}", Name = "GetFoodById")]
+        [Authorize(Roles = "Manager, Administrator")]
         public async Task<IActionResult> GetFood(Guid id)
         {
             var food = await _service.FoodService.GetFoodAsync(id, trackChanges:false);
@@ -38,6 +43,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [Authorize(Roles = "Manager, Administrator")]
         public async Task<IActionResult> CreateFood(Guid categoryId, [FromBody] FoodForCreationDto food)
         {
            
@@ -47,6 +53,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpDelete("{id:guid}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteFood(Guid id)
         {
             await _service.FoodService.DeleteFoodAsync(id, trackChanges:false);
@@ -56,6 +63,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpPut("{id:guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [Authorize(Roles = "Manager, Administrator")]
         public async Task<IActionResult> UpdateFood(Guid id, [FromBody] FoodForUpdateDto food)
         {
 

@@ -1,4 +1,5 @@
 ﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -15,6 +16,8 @@ namespace GeorgianFoodReviewAPI.Presentation
 {
 
     [Route("api/reviews")]
+    [ApiController]
+    [Authorize(Roles = "Manager, Administrator")]
     public class ReviewController : ControllerBase
     {
         private readonly IServiceManager _service;

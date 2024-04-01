@@ -1,4 +1,5 @@
 ﻿using GeorgianFoodReviewAPI.Presentation.ActionFilters;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -15,6 +16,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 {
     [Route("api/reviewers")]
     [ApiController]
+    [Authorize(Roles = "Manager, Administrator")]
     public class ReveiwerController : ControllerBase
     {
         private readonly IServiceManager _service;
@@ -24,6 +26,7 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet]
+        [Authorize(Roles = "Manager, Administrator")]
         public async Task<IActionResult> GetAllReviewers([FromQuery] ReviewerParameters reviewerParameters)
         {
             var reviewers = await _service.ReviewerService.GetAllReviewersAsync(reviewerParameters, trackChanges:false);

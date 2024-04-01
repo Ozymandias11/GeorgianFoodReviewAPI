@@ -13,5 +13,7 @@ namespace Service.Contracts
         IFoodService FoodService { get; }
         IReviewerService ReviewerService { get; }
         IReviewService ReviewService { get; }
+
+        IAuthenticationService AuthenticationService { get; }
     }
 }
