@@ -20,6 +20,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 // Add services to the container.
+//builder.Services.ConfigureResponseCaching();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.ConfigureServiceManager();
@@ -76,6 +77,9 @@ if (app.Environment.IsProduction())
     app.UseHsts();
 
 app.UseHttpsRedirection();
+
+app.UseResponseCaching();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

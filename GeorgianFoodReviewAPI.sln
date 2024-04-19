@@ -17,9 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service.Contracts", "Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{AC9F98AE-9C63-4836-BF3A-2F4DB150FBF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeorgianFoodReviewAPI.Presentation", "GeorgianFoodReviewAPI.Presentation\GeorgianFoodReviewAPI.Presentation.csproj", "{E4DCDA4A-3A16-40A5-939B-1DAEBB31538F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeorgianFoodReviewAPI.Presentation", "GeorgianFoodReviewAPI.Presentation\GeorgianFoodReviewAPI.Presentation.csproj", "{E4DCDA4A-3A16-40A5-939B-1DAEBB31538F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{E0555B35-66F8-435F-ACF4-B01F028045E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{E0555B35-66F8-435F-ACF4-B01F028045E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "TestProject1\Test.csproj", "{5C968C90-3F43-4081-9793-7109DAB07BEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{E0555B35-66F8-435F-ACF4-B01F028045E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0555B35-66F8-435F-ACF4-B01F028045E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0555B35-66F8-435F-ACF4-B01F028045E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C968C90-3F43-4081-9793-7109DAB07BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C968C90-3F43-4081-9793-7109DAB07BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C968C90-3F43-4081-9793-7109DAB07BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C968C90-3F43-4081-9793-7109DAB07BEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

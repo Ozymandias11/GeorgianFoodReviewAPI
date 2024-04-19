@@ -35,6 +35,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
 
         [HttpGet("{id:guid}", Name = "GetReviewById")]
+
         public async Task<IActionResult> GetReview(Guid id)
         {
             var review = await _service.ReviewService.GetReviewAsync(id, trackChnages: false);
