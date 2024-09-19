@@ -25,7 +25,7 @@ namespace GeorgianFoodReviewAPI.Extensions
                             NotFoundException => StatusCodes.Status404NotFound,
                             AlreadyExistsException => StatusCodes.Status409Conflict,
                             _ => StatusCodes.Status500InternalServerError
-                        };  
+                        };
 
                         logger.LogError($"Something went wrong: {contextFeature.Error}");
                         await context.Response.WriteAsync(new ErrorDetails()

@@ -28,7 +28,6 @@ namespace Repository
             modelBuilder.ApplyConfiguration(new FoodCategoryConfiguration());
             modelBuilder.ApplyConfiguration(new ReviewConfiguration());
             modelBuilder.ApplyConfiguration(new ReviewerConfiguration());
-
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
 
 

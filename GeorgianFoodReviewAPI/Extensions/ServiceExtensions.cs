@@ -65,6 +65,7 @@ namespace GeorgianFoodReviewAPI.Extensions
             })
             .AddJwtBearer(options =>
             {
+                options.IncludeErrorDetails = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
