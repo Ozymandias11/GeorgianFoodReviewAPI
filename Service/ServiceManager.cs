@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.ConfigurationModels;
 using Entities.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Service.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +25,7 @@ namespace Service
         private readonly Lazy<IAuthenticationService> _authenticationService;
 
         public ServiceManager(IRepositoryManager repositoryManager, ILoggerManager loggerManager,
-            IMapper mapper, ValidationService validationService, UserManager<User> usermanager, IConfiguration configuration)
+            IMapper mapper, ValidationService validationService, UserManager<User> usermanager, IOptions<JwtConfiguration>  configuration)
         {
             _categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, loggerManager, mapper, validationService));
             _countryService = new Lazy<ICountryService>(() => new CountryService(repositoryManager, loggerManager, mapper, validationService));
