@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +15,22 @@ builder.Services.AddHttpClient("APIClient", client =>
     client.DefaultRequestHeaders.Clear();
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 });
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+}).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+  .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, opt =>
+  {
+      opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+      opt.Authority = "https://localhost:5005";
+      opt.ClientId = "georgianfoodreviewclient";
+      opt.ResponseType = OpenIdConnectResponseType.Code;
+      opt.SaveTokens = true;
+      opt.ClientSecret = "GeorgianFoodReviewClientSecret";
+      opt.UsePkce = false;
+  });
 
 
 
@@ -32,6 +51,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

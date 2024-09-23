@@ -1,4 +1,5 @@
 using GeorgianFoodReview.Client.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Text.Json;
@@ -32,6 +33,7 @@ namespace GeorgianFoodReview.Client.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        [Authorize]
         public async Task<IActionResult> Countries()
         {
             var httpClient = _httpClientFactory.CreateClient("APIClient");
