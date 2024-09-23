@@ -10,7 +10,8 @@ public static class Config
         new IdentityResource[]
         { 
             new IdentityResources.OpenId(),
-            new IdentityResources.Profile()
+            new IdentityResources.Profile(),
+            new IdentityResources.Address()
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
@@ -31,10 +32,12 @@ public static class Config
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = new List<string>{ "https://localhost:7221/signin-oidc" },
                     AllowedScopes = {IdentityServerConstants.StandardScopes.OpenId, 
-                    IdentityServerConstants.StandardScopes.Profile},
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Address},
                     ClientSecrets = {new Secret("GeorgianFoodReviewClientSecret".ToSha512())},
-                    RequirePkce = false,
-                    RequireConsent = true
+                    RequireConsent = true,
+                    PostLogoutRedirectUris = new List<string> { "https://localhost:7221/signout-callback-oidc" },
+                    RequirePkce = true
                 }
             };
 }

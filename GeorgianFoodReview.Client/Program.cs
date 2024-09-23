@@ -2,8 +2,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Net.Http.Headers;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
+
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -15,6 +19,14 @@ builder.Services.AddHttpClient("APIClient", client =>
     client.DefaultRequestHeaders.Clear();
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 });
+
+builder.Services.AddHttpClient("IDPClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:5005/");
+    client.DefaultRequestHeaders.Clear();
+    client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
+});
+
 
 builder.Services.AddAuthentication(opt =>
 {
@@ -29,7 +41,10 @@ builder.Services.AddAuthentication(opt =>
       opt.ResponseType = OpenIdConnectResponseType.Code;
       opt.SaveTokens = true;
       opt.ClientSecret = "GeorgianFoodReviewClientSecret";
-      opt.UsePkce = false;
+      opt.GetClaimsFromUserInfoEndpoint = true;
+      opt.ClaimActions.DeleteClaims(["sid", "idp"]);
+      opt.Scope.Add("address");
+
   });
 
 

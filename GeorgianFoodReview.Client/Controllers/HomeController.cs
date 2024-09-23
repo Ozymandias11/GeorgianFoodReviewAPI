@@ -1,7 +1,11 @@
 using GeorgianFoodReview.Client.Models;
+using IdentityModel.Client;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Diagnostics;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace GeorgianFoodReview.Client.Controllers
@@ -18,11 +22,6 @@ namespace GeorgianFoodReview.Client.Controllers
         }
 
         public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult Privacy()
         {
             return View();
         }
@@ -49,6 +48,47 @@ namespace GeorgianFoodReview.Client.Controllers
 
             return View(countriesString);
 
+
+
+
+        }
+
+        public async Task<IActionResult> Privacy()
+        {
+            var idpClient = _httpClientFactory.CreateClient("IDPClient");
+
+            //following contains /userinfo endpoint's address
+            var metaDataResponse = await idpClient.GetDiscoveryDocumentAsync();
+
+            var accessToken = await HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+
+            var response = await idpClient.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = metaDataResponse.UserInfoEndpoint,
+                Token = accessToken
+            });
+
+
+            if (response.IsError)
+            {
+                throw new Exception("Problem with fetching data from the UserInfo endpoint", response.Exception);
+            }
+
+            var addressClaim = response.Claims.FirstOrDefault(c => c.Type.Equals("address"));
+
+            User.AddIdentity(new ClaimsIdentity(new List<Claim>
+            {
+                new Claim(addressClaim.Type.ToString(), addressClaim.Value.ToString()) 
+            
+            }));
+
+            return View();
+
+            
+
+
+        
+       
 
 
 
