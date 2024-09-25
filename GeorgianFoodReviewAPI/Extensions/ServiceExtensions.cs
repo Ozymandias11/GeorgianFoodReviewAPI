@@ -73,12 +73,8 @@ namespace GeorgianFoodReviewAPI.Extensions
 
   
             var secretKey = Environment.GetEnvironmentVariable("SECRET");
-            services.AddAuthentication(opt =>
-            {
-                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
+
+            services.Configure<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme, options =>
             {
                 options.IncludeErrorDetails = true;
                 options.TokenValidationParameters = new TokenValidationParameters
@@ -89,8 +85,7 @@ namespace GeorgianFoodReviewAPI.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = jwtConfiguration.ValidIssuer,
                     ValidAudience = jwtConfiguration.ValidAudience,
-                    IssuerSigningKey = new
-                 SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
                 };
             });
         }
@@ -133,6 +128,17 @@ namespace GeorgianFoodReviewAPI.Extensions
         public static void AddJwtConfiguration(this IServiceCollection services,
                     IConfiguration configuration) =>
                     services.Configure<JwtConfiguration>(configuration.GetSection("JwtSettings"));
+
+        public static void ConfigureAuthenticationHandler(this IServiceCollection services) =>
+            services.AddAuthentication("Bearer")
+            .AddJwtBearer("Bearer", options =>
+            {
+                options.Authority = "https://localhost:5005";
+                options.Audience = "georgianfoodreviewapi";
+            });
+       
+
+        
 
 
     }

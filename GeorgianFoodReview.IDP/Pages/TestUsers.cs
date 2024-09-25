@@ -21,9 +21,10 @@ public static class TestUsers
                      Password = "JohnPassword",
                      Claims = new List<Claim>
                      {
-                     new Claim("given_name", "John"),
-                     new Claim("family_name", "Doe"),
-                     new Claim("address","John Doe's Boulevard 323")
+                         new Claim("given_name", "John"),
+                         new Claim("family_name", "Doe"),
+                         new Claim("address","John Doe's Boulevard 323"),
+                         new Claim("role", "Administrator")
                      }
              },
                      new TestUser
@@ -33,9 +34,10 @@ public static class TestUsers
                      Password = "JanePassword",
                      Claims = new List<Claim>
                      {
-                     new Claim("given_name", "Jane"),
-                     new Claim("family_name", "Doe"),
-                     new Claim("address","Jane Doe's Boulevard 323")
+                         new Claim("given_name", "Jane"),
+                         new Claim("family_name", "Doe"),
+                         new Claim("address","Jane Doe's Boulevard 323"),
+                         new Claim("role", "Visitor")
                      }
              }
   };

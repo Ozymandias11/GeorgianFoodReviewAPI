@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace GeorgianFoodReview.Client.Controllers
 {
-    public class AuthController : ControllerBase
+    public class AuthController : Controller
     {
         public IActionResult Login()
         {
@@ -20,5 +20,11 @@ namespace GeorgianFoodReview.Client.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);  
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+     
     }
 }

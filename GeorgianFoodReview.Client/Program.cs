@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.IdentityModel.Tokens;
+using IdentityModel;
+using GeorgianFoodReview.Client.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,8 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<BearerTokenHandler>();
 
 
 builder.Services.AddHttpClient("APIClient", client =>
@@ -18,7 +23,7 @@ builder.Services.AddHttpClient("APIClient", client =>
     client.BaseAddress = new Uri("https://localhost:7227/");
     client.DefaultRequestHeaders.Clear();
     client.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
-});
+}).AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddHttpClient("IDPClient", client =>
 {
@@ -32,7 +37,10 @@ builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-}).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+}).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, opt =>
+{
+    opt.AccessDeniedPath = "/Auth/AccessDenied";
+})
   .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, opt =>
   {
       opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -44,6 +52,13 @@ builder.Services.AddAuthentication(opt =>
       opt.GetClaimsFromUserInfoEndpoint = true;
       opt.ClaimActions.DeleteClaims(["sid", "idp"]);
       opt.Scope.Add("address");
+      opt.Scope.Add("roles");
+      opt.ClaimActions.MapUniqueJsonKey("role", "role");
+      opt.Scope.Add("georgianfoodreviewapi.scope");
+      opt.TokenValidationParameters = new TokenValidationParameters
+      {
+          RoleClaimType = JwtClaimTypes.Role
+      };
 
   });
 
