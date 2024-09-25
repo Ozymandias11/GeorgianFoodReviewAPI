@@ -12,7 +12,7 @@ public static class Config
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
             new IdentityResources.Address(),
-            new IdentityResource("roles", "User role(s)", new List<string>{"role"})
+            new IdentityResource("roles", "User role(s)", new List<string>{"role"}),
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>

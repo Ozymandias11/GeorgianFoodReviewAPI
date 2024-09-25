@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<BearerTokenHandler>();
 
@@ -59,10 +59,12 @@ builder.Services.AddAuthentication(opt =>
       {
           RoleClaimType = JwtClaimTypes.Role
       };
+      opt.Scope.Add("country");
+      opt.ClaimActions.MapUniqueJsonKey("country", "country");
 
   });
 
-
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 

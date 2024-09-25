@@ -24835,3 +24835,28 @@
 2024-09-25 13:39:28.0777 Trace FileTarget(Name=logfile) has 2 layouts
 2024-09-25 13:39:28.0777 Trace FileTarget(Name=logfile): Using appenderFactory: NLog.Internal.FileAppenders.SingleProcessFileAppender+Factory
 2024-09-25 13:39:28.0777 Info Configuration initialized.
+2024-09-25 14:04:58.0894 Info AppDomain Shutting down. LogFactory closing...
+2024-09-25 14:04:58.1110 Debug Stop watching file-filter 'nlog.config' in directory: C:\Users\HP\source\repos\GeorgianFoodReviewAPI\GeorgianFoodReviewAPI
+2024-09-25 14:04:58.1110 Trace Flushing all 1 targets...
+2024-09-25 14:04:58.1110 Trace ForEachItemInParallel() 1 items
+2024-09-25 14:04:58.1272 Trace FileTarget(Name=logfile): FlushAsync
+2024-09-25 14:04:58.1272 Trace Continuation invoked: 
+2024-09-25 14:04:58.1272 Trace Parallel task completed. 0 items remaining
+2024-09-25 14:04:58.1272 Debug Flush completed
+2024-09-25 14:04:58.1272 Trace FileTarget(Name=logfile): FlushAsync Done
+2024-09-25 14:04:58.1272 Debug Closing logging configuration...
+2024-09-25 14:04:58.1272 Trace Closing FileTarget(Name=logfile)
+2024-09-25 14:04:58.1272 Debug FileTarget(Name=logfile): Closing...
+2024-09-25 14:04:58.1272 Debug FileTarget(Name=logfile): Closed.
+2024-09-25 14:04:58.1272 Trace Closing .\logs\${shortdate}_logfile.txt
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${literal}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${shortdate}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${literal}
+2024-09-25 14:04:58.1401 Trace Closing ${longdate} ${level:uppercase=true} ${message}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${longdate}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${literal}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${level}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${literal}
+2024-09-25 14:04:58.1401 Trace Closing Layout Renderer: ${message}
+2024-09-25 14:04:58.1401 Debug Finished closing logging configuration.
+2024-09-25 14:04:58.1401 Info LogFactory has been closed.

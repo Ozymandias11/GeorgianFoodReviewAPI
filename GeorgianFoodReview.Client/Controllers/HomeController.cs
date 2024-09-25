@@ -39,19 +39,26 @@ namespace GeorgianFoodReview.Client.Controllers
 
             var response = await httpClient.GetAsync("/api/countries").ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {
+                var countriesString = await response.Content.ReadAsStringAsync();
 
-            var countriesString = await response.Content.ReadAsStringAsync();
+                var countries = JsonSerializer.Deserialize<List<CountryViewModel>>(countriesString,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            var companies = JsonSerializer.Deserialize<List<CountryViewModel>>(countriesString, 
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true});
+                return View(countries);
 
-            return View(countriesString);
+            }else if(response.StatusCode == System.Net.HttpStatusCode.Unauthorized || response.StatusCode
+                == System.Net.HttpStatusCode.Forbidden)
+            {
+                return RedirectToAction("AccessDenied", "Auth");
+            }
 
 
-
+            throw new Exception("Problem occured when aaccessing API");
 
         }
+
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Privacy()
         {
@@ -67,6 +74,8 @@ namespace GeorgianFoodReview.Client.Controllers
                 Address = metaDataResponse.UserInfoEndpoint,
                 Token = accessToken
             });
+
+
 
 
             if (response.IsError)

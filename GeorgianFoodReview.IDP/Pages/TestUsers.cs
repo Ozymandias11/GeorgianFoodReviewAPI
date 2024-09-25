@@ -24,7 +24,8 @@ public static class TestUsers
                          new Claim("given_name", "John"),
                          new Claim("family_name", "Doe"),
                          new Claim("address","John Doe's Boulevard 323"),
-                         new Claim("role", "Administrator")
+                         new Claim("role", "Administrator"),
+
                      }
              },
                      new TestUser
@@ -37,7 +38,7 @@ public static class TestUsers
                          new Claim("given_name", "Jane"),
                          new Claim("family_name", "Doe"),
                          new Claim("address","Jane Doe's Boulevard 323"),
-                         new Claim("role", "Visitor")
+                         new Claim("role", "Visitor"),
                      }
              }
   };
