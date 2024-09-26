@@ -39,15 +39,22 @@ public static class Config
                     ClientId = "georgianfoodreviewclient",
                     AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = new List<string>{ "https://localhost:7221/signin-oidc" },
-                    AllowedScopes = {IdentityServerConstants.StandardScopes.OpenId, 
-                    IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Address,
-                    "roles",
-                    "georgianfoodreviewapi.scope"},
+                    AllowedScopes = 
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId, 
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.Address,
+                        "roles",
+                        "georgianfoodreviewapi.scope"
+                    
+                    },
                     ClientSecrets = {new Secret("GeorgianFoodReviewClientSecret".ToSha512())},
                     RequireConsent = true,
                     PostLogoutRedirectUris = new List<string> { "https://localhost:7221/signout-callback-oidc" },
-                    RequirePkce = true
+                    RequirePkce = true,
+                    AccessTokenLifetime = 120,
+                    AllowOfflineAccess = true,
+                    UpdateAccessTokenClaimsOnRefresh = true,
                 }
             };
 }

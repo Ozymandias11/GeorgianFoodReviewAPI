@@ -59,8 +59,7 @@ builder.Services.AddAuthentication(opt =>
       {
           RoleClaimType = JwtClaimTypes.Role
       };
-      opt.Scope.Add("country");
-      opt.ClaimActions.MapUniqueJsonKey("country", "country");
+      opt.Scope.Add("offline_access");
 
   });
 
