@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace GeorgianFoodReview.IDP;
@@ -6,19 +7,27 @@ internal static class HostingExtensions
 {
     public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
     {
-        
+
         builder.Services.AddRazorPages();
 
+        var migrationsAssembly = typeof(HostingExtensions).Assembly.GetName().Name;
+        var connectionString = builder.Configuration.GetConnectionString("sqlConnection");
+
         builder.Services.AddIdentityServer(options =>
-            {
-                // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
-                options.EmitStaticAudienceClaim = true;
-            })
-            .AddInMemoryIdentityResources(Config.Ids)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryApiResources(Config.Apis)
-            .AddInMemoryClients(Config.Clients)
-            .AddTestUsers(TestUsers.Users);
+        {
+            options.EmitStaticAudienceClaim = true;
+        })
+        .AddConfigurationStore(options =>
+        {
+            options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                sql => sql.MigrationsAssembly(migrationsAssembly));
+        })
+        .AddOperationalStore(options =>
+        {
+            options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
+                sql => sql.MigrationsAssembly(migrationsAssembly));
+        })
+        .AddTestUsers(TestUsers.Users);
 
         return builder.Build();
     }
