@@ -1,3 +1,5 @@
+using GeorgianFoodReview.IDP.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -13,6 +15,14 @@ internal static class HostingExtensions
         var migrationsAssembly = typeof(HostingExtensions).Assembly.GetName().Name;
         var connectionString = builder.Configuration.GetConnectionString("sqlConnection");
 
+        builder.Services.AddDbContext<UserContext>(options => options
+                          .UseSqlServer(connectionString));
+
+        builder.Services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<UserContext>()
+            .AddDefaultTokenProviders();
+
+
         builder.Services.AddIdentityServer(options =>
         {
             options.EmitStaticAudienceClaim = true;
@@ -27,7 +37,7 @@ internal static class HostingExtensions
             options.ConfigureDbContext = b => b.UseSqlServer(connectionString,
                 sql => sql.MigrationsAssembly(migrationsAssembly));
         })
-        .AddTestUsers(TestUsers.Users);
+        .AddAspNetIdentity<User>();
 
         return builder.Build();
     }
