@@ -128,6 +128,20 @@ namespace GeorgianFoodReview.IDP.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "c3a0cb55-ddaf-4f2f-8419-f3f937698aa1",
+                            Name = "Administrator",
+                            NormalizedName = "ADMINISTRATOR"
+                        },
+                        new
+                        {
+                            Id = "6d506b42-9fa0-4ef7-a92a-0b5b0a123665",
+                            Name = "Visitor",
+                            NormalizedName = "VISITOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

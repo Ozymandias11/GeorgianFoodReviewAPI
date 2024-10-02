@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using GeorgianFoodReview.IDP.Entities.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GeorgianFoodReview.IDP.Entities
@@ -11,7 +12,8 @@ namespace GeorgianFoodReview.IDP.Entities
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            base.OnModelCreating(builder); 
+            base.OnModelCreating(builder);
+            builder.ApplyConfiguration(new RoleConfiguration());
         }
     }
 }
