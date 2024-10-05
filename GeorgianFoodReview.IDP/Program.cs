@@ -19,6 +19,10 @@ try
         .Enrich.FromLogContext()
         .ReadFrom.Configuration(ctx.Configuration));
 
+    var connectionString = builder.Configuration.GetConnectionString("identitySqlConnection");
+
+    SeedUserData.EnsureSeedData(connectionString);
+
     var app = builder
         .ConfigureServices()
         .ConfigurePipeline();
