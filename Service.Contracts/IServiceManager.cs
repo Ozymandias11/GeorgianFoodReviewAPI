@@ -14,6 +14,5 @@ namespace Service.Contracts
         IReviewerService ReviewerService { get; }
         IReviewService ReviewService { get; }
 
-        IAuthenticationService AuthenticationService { get; }
     }
 }

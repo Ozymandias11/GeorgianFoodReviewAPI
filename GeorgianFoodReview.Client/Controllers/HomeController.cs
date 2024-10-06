@@ -32,12 +32,12 @@ namespace GeorgianFoodReview.Client.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
         public async Task<IActionResult> Countries()
         {
             var httpClient = _httpClientFactory.CreateClient("APIClient");
 
-            var response = await httpClient.GetAsync("/api/countries").ConfigureAwait(false);
+            var response = await httpClient.GetAsync("api/countries").ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {

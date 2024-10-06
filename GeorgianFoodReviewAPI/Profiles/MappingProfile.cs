@@ -42,7 +42,6 @@ namespace GeorgianFoodReviewAPI.Profiles
 
             CreateMap<ReviewForUpdateDto, Review>().ReverseMap();
 
-            CreateMap<UserForRegistrationDto, User>();
                
                 
                

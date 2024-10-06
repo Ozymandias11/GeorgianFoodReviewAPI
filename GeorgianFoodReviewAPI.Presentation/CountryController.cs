@@ -20,7 +20,7 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpGet]
         [HttpHead]
-        [Authorize(Roles = "Administrator")]
+        [Authorize]
         public async Task<IActionResult> GetCountries([FromQuery] CountryParameters countryParameters)
         {
             var countries = await _service.CountryService.GetAllCountriesAsync(countryParameters ,trackChanges:false);
@@ -28,7 +28,6 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpGet("{id:guid}", Name = "CountryById")]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetCountry(Guid id)
         {
             var country = await _service.CountryService.GetCountryAsync(id, trackChanges: false);
@@ -37,7 +36,6 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> CreateCountry([FromBody] CountryForCreationDto country)
         {
 
@@ -47,7 +45,6 @@ namespace GeorgianFoodReviewAPI.Presentation
         }
 
         [HttpDelete("{id:guid}")]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteCountry(Guid id)
         {
             await _service.CountryService.DeleteCountryAsync(id, trackChanges:false);
@@ -56,7 +53,6 @@ namespace GeorgianFoodReviewAPI.Presentation
 
         [HttpPut("{id:Guid}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
-        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateCountry(Guid id, [FromBody] CountryForUpdateDto country)
         {
          

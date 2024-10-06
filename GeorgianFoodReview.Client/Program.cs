@@ -14,9 +14,6 @@ JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 // Add services to the container.
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddTransient<BearerTokenHandler>();
-
 
 builder.Services.AddHttpClient("APIClient", client =>
 {
@@ -62,6 +59,10 @@ builder.Services.AddAuthentication(opt =>
       opt.Scope.Add("offline_access");
 
   });
+
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<BearerTokenHandler>();
 
 builder.Services.AddControllersWithViews();
 
